@@ -1,0 +1,24 @@
+# Normalise line endings. Without this, Git on Windows (core.autocrlf=true) rewrites
+# every text file to CRLF on checkout, so a Linux user cloning this repository sees the
+# whole tree as modified -- and the PowerShell scripts here are already LF in the repo.
+#
+# "text=auto eol=lf" keeps one canonical LF form in the repository and in the working
+# tree, for every platform.
+* text=auto eol=lf
+
+# Binary: never touch these, a newline rewrite corrupts them.
+*.png binary
+*.jar binary
+*.zip binary
+*.ico binary
+
+# Windows scripts must keep CRLF for some legacy tools; the ones here run under
+# PowerShell, which is fine with LF, so they are covered by the rule above.
+# Kept explicit so nobody "helpfully" flips them to CRLF later.
+*.ps1 text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Diffs
+*.md diff=markdown
+*.java diff=java
