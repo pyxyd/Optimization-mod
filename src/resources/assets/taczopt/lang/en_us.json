@@ -1,0 +1,14 @@
+{
+  "taczadsfire.screen.title": "ADS Fire - per-gun toggles",
+  "taczadsfire.screen.search": "Search",
+  "taczadsfire.screen.on": "ON",
+  "taczadsfire.screen.off": "OFF",
+  "taczadsfire.screen.default_on": "Unset guns: ON by default (click)",
+  "taczadsfire.screen.default_off": "Unset guns: OFF by default (click)",
+  "taczadsfire.screen.clear": "Clear all per-gun settings",
+  "taczadsfire.screen.empty": "No guns found (TaCZ not loaded yet?)",
+  "taczadsfire.screen.nomatch": "No matching gun",
+  "key.taczadsfire.panel": "Open ADS Fire panel",
+  "key.category.taczadsfire": "TaCZ Addons",
+  "key.category.taczopt": "TaCZ Addons"
+}

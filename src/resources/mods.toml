@@ -1,0 +1,38 @@
+modLoader="javafml"
+loaderVersion="[46,)"
+license="All Rights Reserved"
+# NOTE: no logoFile here on purpose. resources\icon.png is the mod-list icon and it is
+# the hand-made PNG copied in BYTE-FOR-BYTE -- do not run it through any image library,
+# re-encoding it changes the file even when every pixel is identical.
+
+[[mods]]
+modId="taczopt"
+version="2.0.0"
+displayName="Optimization for Tacz"
+authors="pyxyd"
+# Shown as a clickable link on the in-game Mods list (Forge reads exactly this key --
+# ModInfo.getModURL / ModListScreen both use "displayURL").
+# Forge only supports ONE url here, so the rest go in README.txt at the jar root.
+displayURL="https://github.com/pyxyd/Optimization-mod"
+description="Optimization for Tacz (merged): bullet hole, one-shot kill, hybrid aim, ads-fire with per-gun panel, hit marker, hip-fire crosshair, crouch-aim zero spread, gun knockback. Config: config/taczopt.properties | GitHub: https://github.com/pyxyd/Optimization-mod | Modrinth: https://modrinth.com/mod/optimization-forge"
+
+[[dependencies.taczopt]]
+modId="forge"
+mandatory=true
+versionRange="[46,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.taczopt]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.taczopt]]
+modId="tacz"
+mandatory=true
+versionRange="[1.0.0,)"
+ordering="AFTER"
+side="BOTH"

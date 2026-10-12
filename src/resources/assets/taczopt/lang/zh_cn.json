@@ -1,0 +1,14 @@
+{
+  "taczadsfire.screen.title": "枪械开火自动开镜 · 开关面板",
+  "taczadsfire.screen.search": "搜索",
+  "taczadsfire.screen.on": "开",
+  "taczadsfire.screen.off": "关",
+  "taczadsfire.screen.default_on": "未设置的枪：默认开启（点击切换）",
+  "taczadsfire.screen.default_off": "未设置的枪：默认关闭（点击切换）",
+  "taczadsfire.screen.clear": "清空所有单独设置",
+  "taczadsfire.screen.empty": "没有读到任何枪械（TaCZ 还没加载完？）",
+  "taczadsfire.screen.nomatch": "没有匹配的枪械",
+  "key.taczadsfire.panel": "打开枪械开镜面板",
+  "key.category.taczadsfire": "TaCZ 附加",
+  "key.category.taczopt": "TaCZ 附加"
+}

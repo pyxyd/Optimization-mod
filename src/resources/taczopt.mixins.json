@@ -1,0 +1,22 @@
+{
+    "required": false,
+    "minVersion": "0.8",
+    "package": "com.taczopt.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "client": [
+        "BulletHoleParticleMixin",
+        "ParticleAccessorMixin",
+        "SingleQuadParticleAccessorMixin",
+        "EntityKineticBulletMixin",
+        "AimKeyMixin",
+        "LocalPlayerAimMixin",
+        "LocalPlayerShootMixin",
+        "ShootKeyMixin",
+        "CrosshairEventMixin",
+        "CrouchAimSpreadMixin"
+    ],
+    "mixins": [],
+    "injectors": {
+        "defaultRequire": 0
+    }
+}
