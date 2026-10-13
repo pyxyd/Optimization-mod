@@ -23,23 +23,19 @@ Requirements
 Features
 --------
 
-1) Custom bullet holes
-   The bullet hole on a block uses your own texture, floating one layer above the
-   vanilla hole, then fades out. Which guns it applies to is configurable.
-
-2) One-shot kill for chosen guns
+1) One-shot kill for chosen guns
    Guns listed in oneshot.guns kill any non-player mob on hit (default: the AWM).
    Players are never affected unless you turn that on.
 
-3) Hybrid aim
+2) Hybrid aim
    Tap the aim key to toggle aiming, hold it to aim only while held. Works with both
    mouse and keyboard bindings.
 
-4) Auto-aim-before-fire
+3) Auto-aim-before-fire
    Holding the fire button aims first and only then shoots, so the shot always leaves
    the barrel while already scoped. Per-gun on/off panel in game (default key: O).
 
-5) Hit marker
+4) Hit marker
    A single X flashes next to the crosshair. The shape never changes -- only the
    colour does:
        white  = hit a non-head hitbox
@@ -47,15 +43,15 @@ Features
        red    = that shot killed the target (takes priority over orange)
    Plus a quiet hit-confirm sound and a very small 90 ms camera kick.
 
-6) Hip-fire crosshair
+5) Hip-fire crosshair
    A Delta-Force style hollow cross drawn by this mod, with the gap driven by the
    real TaCZ hip-fire inaccuracy of the gun you are holding. It hides while aiming.
 
-7) Crouch-aim: recoil only, no spread
+6) Crouch-aim: recoil only, no spread
    While crouching AND fully scoped in, bullet spread is forced to zero. Recoil,
    sound and damage are untouched.
 
-8) Configurable gun knockback
+7) Configurable gun knockback
    The gun pack data has bullet.knockback set to 1 on every gun, so hits actually
    push the target. (Data change, not code -- see the gun packs under tacz\.)
 

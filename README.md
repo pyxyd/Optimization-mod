@@ -26,14 +26,13 @@ It only changes how things look and feel. It does **not** add attachment slots, 
 
 | # | Feature | What it does |
 |---|---------|--------------|
-| 1 | **Custom bullet holes** | The hole left in a block uses your own texture instead of the vanilla one, floating one layer above it, then fades out. |
-| 2 | **One-shot kill** | Guns you list kill any non-player mob on hit. Players are never affected unless you enable it. |
-| 3 | **Hybrid aim** | Tap the aim key to toggle aiming, hold it to aim only while held. Mouse and keyboard both work. |
-| 4 | **Auto aim before fire** | Holding fire aims first and shoots only once the scope is up, so the shot never leaves the barrel unscoped. Per-gun on/off panel in game (default key `O`). |
-| 5 | **Hit marker** | One X flashes next to the crosshair: **white** = body, **orange** = headshot, **red** = that shot killed. The shape never changes, only the colour. |
-| 6 | **Hip-fire crosshair** | A Delta-Force style hollow cross whose gap follows the real TaCZ hip-fire inaccuracy of the gun in your hands. Hidden while aiming. |
-| 7 | **Crouch-aim, recoil only** | While crouching **and** fully scoped in, bullet spread is forced to zero. Recoil, sound and damage are untouched. |
-| 8 | **Gun knockback** | Every gun's `bullet.knockback` is set to `1`, so hits actually shove the target. |
+| 1 | **One-shot kill** | Guns you list kill any non-player mob on hit. Players are never affected unless you enable it. |
+| 2 | **Hybrid aim** | Tap the aim key to toggle aiming, hold it to aim only while held. Mouse and keyboard both work. |
+| 3 | **Auto aim before fire** | Holding fire aims first and shoots only once the scope is up, so the shot never leaves the barrel unscoped. Per-gun on/off panel in game (default key `O`). |
+| 4 | **Hit marker** | One X flashes next to the crosshair: **white** = body, **orange** = headshot, **red** = that shot killed. The shape never changes, only the colour. |
+| 5 | **Hip-fire crosshair** | A Delta-Force style hollow cross whose gap follows the real TaCZ hip-fire inaccuracy of the gun in your hands. Hidden while aiming. |
+| 6 | **Crouch-aim, recoil only** | While crouching **and** fully scoped in, bullet spread is forced to zero. Recoil, sound and damage are untouched. |
+| 7 | **Gun knockback** | Every gun's `bullet.knockback` is set to `1`, so hits actually shove the target. |
 
 Everything is toggled from a single config file: **`config/taczopt.properties`**.
 It hot-reloads within a second -- no restart needed. Gun pack data is different: it is
@@ -114,7 +113,7 @@ build.ps1                    build + verify + package the mod
 src/
   com/taczopt/               Java sources
     adsfire/                 auto aim before fire (+ the in-game panel)
-    bullethole/              custom bullet hole texture
+    bullethole/              internal, not a feature -- see the config file
     config/                  the shared config file reader/writer
     crosshair/               hip-fire crosshair and the TaCZ spread algorithm
     hitfeedback/             the hit marker
@@ -171,14 +170,13 @@ text stay with it. See [LICENSE](LICENSE) for the exact terms.
 
 | # | 功能 | 说明 |
 |---|------|------|
-| 1 | **自定义弹孔** | 方块上的弹孔改用你自己的贴图（不再是原版贴图），浮在方块表面上方一层，然后逐渐淡出。 |
-| 2 | **一枪致死** | 你指定的枪命中非玩家生物即秒杀。默认不影响玩家，除非你手动打开。 |
-| 3 | **混合瞄准** | 轻按瞄准键 = 切换开镜，长按 = 按住才开镜。鼠标、键盘都生效。 |
-| 4 | **开火前自动开镜** | 按住开火会先开镜，等镜子完全抬起才真正开枪，子弹不会在没开镜时飞出去。游戏内有每把枪的开关面板（默认按键 `O`）。 |
-| 5 | **击中反馈** | 准星旁闪一个 X：**白色** = 命中身体，**橙色** = 爆头，**红色** = 这一枪打死了。形状永远不变，只变颜色。 |
-| 6 | **腰射准星** | Delta-Force 风格的空心十字，开口大小实时跟随手里这把枪真实的 TaCZ 腰射扩散。开镜时自动隐藏。 |
-| 7 | **潜行开镜只消后坐** | 在潜行**且**完全开镜的状态下，把子弹扩散强制归零。后坐力、音效、伤害都不动。 |
-| 8 | **枪械击退** | 把每把枪的 `bullet.knockback` 设为 `1`，命中真的能把目标推开。 |
+| 1 | **一枪致死** | 你指定的枪命中非玩家生物即秒杀。默认不影响玩家，除非你手动打开。 |
+| 2 | **混合瞄准** | 轻按瞄准键 = 切换开镜，长按 = 按住才开镜。鼠标、键盘都生效。 |
+| 3 | **开火前自动开镜** | 按住开火会先开镜，等镜子完全抬起才真正开枪，子弹不会在没开镜时飞出去。游戏内有每把枪的开关面板（默认按键 `O`）。 |
+| 4 | **击中反馈** | 准星旁闪一个 X：**白色** = 命中身体，**橙色** = 爆头，**红色** = 这一枪打死了。形状永远不变，只变颜色。 |
+| 5 | **腰射准星** | Delta-Force 风格的空心十字，开口大小实时跟随手里这把枪真实的 TaCZ 腰射扩散。开镜时自动隐藏。 |
+| 6 | **潜行开镜只消后坐** | 在潜行**且**完全开镜的状态下，把子弹扩散强制归零。后坐力、音效、伤害都不动。 |
+| 7 | **枪械击退** | 把每把枪的 `bullet.knockback` 设为 `1`，命中真的能把目标推开。 |
 
 所有开关都在同一个配置文件里：**`config/taczopt.properties`**，一秒内热重载，不用重启游戏。
 但枪包数据不一样——它只在游戏启动时读取一次，所以改完枪包必须完整重启。
@@ -252,7 +250,7 @@ build.ps1                    构建 + 校验 + 打包
 src/
   com/taczopt/               Java 源码
     adsfire/                 开火前自动开镜（含游戏内面板）
-    bullethole/              自定义弹孔贴图
+    bullethole/              内部实现，不是功能 —— 见配置文件
     config/                  共用的配置文件读写
     crosshair/               腰射准星与 TaCZ 扩散算法
     hitfeedback/             击中反馈

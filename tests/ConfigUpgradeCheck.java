@@ -22,6 +22,7 @@ public final class ConfigUpgradeCheck {
                 "hit.headshot_size=4",
                 "hit.scale=1.7",
                 "hole.scale=0.8",
+                "hole.guns=auto",
                 "");
         Files.write(cfgDir.resolve("taczopt.properties"), legacy.getBytes("UTF-8"));
 
@@ -40,6 +41,15 @@ public final class ConfigUpgradeCheck {
         System.out.println("=== 缺失的键补上新默认 ===");
         eq("hit.sound 补上", "true", ConfigFile.get("hit.sound", "?"));
         eq("hit.enabled 保留", "true", ConfigFile.get("hit.enabled", "?"));
+        eq("hole.pictures 补上", "true", ConfigFile.get("hole.pictures", "?"));
+
+        System.out.println();
+        System.out.println("=== hole.guns=auto 要升级成 *（auto 只在 tacz 命名空间下有意义）===");
+        eq("hole.guns auto -> *", "*", ConfigFile.get("hole.guns", "?"));
+
+        System.out.println();
+        System.out.println("=== 玩家自己写的 hole.guns 不能被改 ===");
+        check("hole.guns 不是 auto 时保持原样", !"auto".equals(ConfigFile.get("hole.guns", "?")));
 
         System.out.println();
         System.out.println("=== 已废弃的键必须被丢掉（否则玩家以为还能调） ===");
@@ -57,6 +67,8 @@ public final class ConfigUpgradeCheck {
         check("文件里没有 hit.headshot_size（废弃键已清理）", !after.contains("hit.headshot_size"));
         check("文件里保留了 hit.scale=1.7", after.contains("hit.scale=1.7"));
         check("文件里保留了 hole.scale=0.8", after.contains("hole.scale=0.8"));
+        check("文件里 hole.guns 已经是 *", after.contains("hole.guns=*"));
+        check("文件里没有 hole.guns=auto", !after.contains("hole.guns=auto"));
 
         System.out.println();
         System.out.println("=== 重复读不会反复改（幂等） ===");

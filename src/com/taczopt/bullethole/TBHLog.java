@@ -16,9 +16,9 @@ public final class TBHLog {
     }
 
     public static void modLoaded() {
-        LOGGER.info("[taczopt] mod loaded: enabled={} logo_guns={} hole_guns={} texture={} logo_scale={} hole_scale={} lift={} hold={} fade={} alpha={}",
-                TBHConfig.enabled, TBHConfig.gunsRaw(), TBHConfig.holeGunsRaw(), TBHConfig.texture(), TBHConfig.scale,
-                TBHConfig.holeScale, TBHConfig.logoLift, TBHConfig.logoHold, TBHConfig.logoFade, TBHConfig.alpha);
+        LOGGER.info("[taczopt] mod loaded: enabled={} pictures={} logo_guns={} hole_guns={} texture={} logo_scale={} hole_scale={} lift={} hold={} fade={} alpha={}",
+                TBHConfig.enabled, TBHConfig.pictures(), TBHConfig.gunsRaw(), TBHConfig.holeGunsRaw(), TBHConfig.texture(),
+                TBHConfig.scale, TBHConfig.holeScale, TBHConfig.logoLift, TBHConfig.logoHold, TBHConfig.logoFade, TBHConfig.alpha);
     }
 
     public static void autoCheck(String gunId, String fromIndex, String fromConvention, String fromItem, boolean special) {
@@ -51,7 +51,7 @@ public final class TBHLog {
             return;
         }
         missingLogged = true;
-        LOGGER.warn("[taczopt] texture {} not found in block atlas, falling back to vanilla TaCZ bullet hole. "
-                + "Check assets/taczbullethole/textures/block/bullet_hole.png in the mod jar or in your resource pack.", id);
+        LOGGER.warn("[taczopt] texture {} not found in block atlas, keeping the TaCZ bullet hole. "
+                + "Put a .png into {} (folder is created on demand).", id, PicturePack.root());
     }
 }

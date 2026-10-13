@@ -9,7 +9,7 @@ version="2.0.0"
 displayName="Optimization for Tacz"
 authors="pyxyd"
 displayURL="https://github.com/pyxyd/Optimization-mod"
-description="An optimization and quality-of-life add-on for TaCZ (Timeless and Classics Zero). Bullet hole, one-shot kill, hybrid aim, auto aim-before-fire, hit marker, hip-fire crosshair, crouch-aim zero spread, gun knockback. Config: config/taczopt.properties"
+description="An optimization and quality-of-life add-on for TaCZ (Timeless and Classics Zero). One-shot kill, hybrid aim, auto aim-before-fire, hit marker, hip-fire crosshair, crouch-aim zero spread, gun knockback. Config: config/taczopt.properties"
 
 [[dependencies.taczopt]]
 modId="forge"

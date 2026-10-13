@@ -37,12 +37,14 @@ public final class TBHConfig {
 
     private static volatile boolean loaded = false;
     private static volatile ResourceLocation textureId = FALLBACK;
+    private static volatile boolean pictures = true;
 
     private static final ListMatcher LOGO = new ListMatcher();
     private static final ListMatcher HOLE = new ListMatcher();
 
-    private static String lastLogoRaw = "auto";
+    private static String lastLogoRaw = "*";
     private static String lastHoleRaw = "*";
+    private static boolean lastPictures = true;
 
     private TBHConfig() {
     }
@@ -69,9 +71,10 @@ public final class TBHConfig {
     public static void reloadIfChanged() {
         ensureLoaded();
         ConfigFile.reloadIfChanged();
-        String guns = ConfigFile.get(P + "guns", "auto");
+        String guns = ConfigFile.get(P + "guns", "*");
         String holeGuns = ConfigFile.get(P + "hole_scale_guns", "*");
-        if (!guns.equals(lastLogoRaw) || !holeGuns.equals(lastHoleRaw)) {
+        boolean pics = ConfigFile.getBool(P + "pictures", true);
+        if (!guns.equals(lastLogoRaw) || !holeGuns.equals(lastHoleRaw) || pics != lastPictures) {
             load();
         }
     }
@@ -89,8 +92,10 @@ public final class TBHConfig {
         textureId = parseTexture(ConfigFile.get(P + "texture", "taczbullethole:block/bullet_hole"));
 
         TBHSpecial.clearCache();
-        lastLogoRaw = ConfigFile.get(P + "guns", "auto");
+        lastLogoRaw = ConfigFile.get(P + "guns", "*");
         lastHoleRaw = ConfigFile.get(P + "hole_scale_guns", "*");
+        lastPictures = ConfigFile.getBool(P + "pictures", true);
+        pictures = lastPictures;
         LOGO.parse(lastLogoRaw);
         HOLE.parse(lastHoleRaw);
     }
@@ -154,7 +159,7 @@ public final class TBHConfig {
 
     public static boolean applies(String gunId) {
         ensureLoaded();
-        if (!enabled) {
+        if (!enabled || isTacz(gunId)) {
             return false;
         }
         return LOGO.matches(gunId);
@@ -162,10 +167,19 @@ public final class TBHConfig {
 
     public static boolean holeApplies(String gunId) {
         ensureLoaded();
-        if (!enabled) {
+        if (!enabled || isTacz(gunId)) {
             return false;
         }
         return HOLE.matches(gunId);
+    }
+
+    private static boolean isTacz(String gunId) {
+        if (gunId == null || gunId.isEmpty()) {
+            return true;
+        }
+        int colon = gunId.indexOf(':');
+        String namespace = colon > 0 ? gunId.substring(0, colon) : "tacz";
+        return "tacz".equalsIgnoreCase(namespace);
     }
 
     public static String gunsRaw() {
@@ -180,7 +194,12 @@ public final class TBHConfig {
 
     public static ResourceLocation texture() {
         ensureLoaded();
-        return textureId;
+        return pictures ? textureId : FALLBACK;
+    }
+
+    public static boolean pictures() {
+        ensureLoaded();
+        return pictures;
     }
 
     private static Pattern toPattern(String glob) {

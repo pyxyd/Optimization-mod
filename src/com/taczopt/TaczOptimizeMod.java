@@ -2,6 +2,7 @@ package com.taczopt;
 
 import com.mojang.logging.LogUtils;
 import com.taczopt.adsfire.AdsFireConfig;
+import com.taczopt.bullethole.PicturePack;
 import com.taczopt.bullethole.TBHConfig;
 import com.taczopt.bullethole.TBHLog;
 import com.taczopt.config.ConfigFile;
@@ -14,6 +15,7 @@ import com.taczopt.oneshot.OneShotLog;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ public class TaczOptimizeMod {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             TBHConfig.ensureLoaded();
             TBHLog.modLoaded();
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(PicturePack::onAddPackFinders);
             OneShotConfig.ensureLoaded();
             OneShotLog.modLoaded();
             HybridAimConfig.ensureLoaded();
@@ -47,7 +50,7 @@ public class TaczOptimizeMod {
             registerClientHitFeedback();
             registerClientCrosshair();
         }
-        LOGGER.info("[taczopt] Optimization for Tacz 已加载：弹孔 / 秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星；配置 config/taczopt.properties");
+        LOGGER.info("[taczopt] Optimization for Tacz 已加载：秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星；配置 config/taczopt.properties");
     }
 
     private static void registerClientHitFeedback() {

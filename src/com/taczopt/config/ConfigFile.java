@@ -180,7 +180,7 @@ public final class ConfigFile {
     private static void write(Properties p) {
         StringBuilder sb = new StringBuilder();
         sb.append("# Optimization for Tacz —— 合并版配置\n");
-        sb.append("# 弹孔 / 秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星 都在这个文件里。\n");
+        sb.append("# 秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星 都在这个文件里。\n");
         sb.append("# 保存后 1 秒内热重载，不用重启游戏。\n");
         sb.append("# 开火自动开镜的每把枪开关也可以游戏内按 O 打开面板调。\n");
         sb.append("\n");
@@ -243,7 +243,7 @@ public final class ConfigFile {
 
     private static String sectionTitle(String section) {
         if ("hole".equals(section)) {
-            return "自定义弹孔";
+            return "弹孔图案";
         }
         if ("oneshot".equals(section)) {
             return "指定枪械秒杀";
@@ -348,6 +348,8 @@ public final class ConfigFile {
 
             { "crosshair.spread_scale", "1.0", "2.5" },
             { "crosshair.spread_scale", "2.3", "2.5" },
+
+            { "hole.guns", "auto", "*" },
     };
 
     private static Map<String, String> parseRaw(Path file) {
@@ -381,7 +383,7 @@ public final class ConfigFile {
         Properties p = new Properties();
 
         p.setProperty("hole.enabled", "true");
-        p.setProperty("hole.guns", "auto");
+        p.setProperty("hole.guns", "*");
         p.setProperty("hole.logo_hold", "20");
         p.setProperty("hole.logo_fade", "20");
         p.setProperty("hole.logo_lift", "0.03");
@@ -392,6 +394,7 @@ public final class ConfigFile {
         p.setProperty("hole.hole_scale", "0.6");
         p.setProperty("hole.hole_scale_guns", "*");
         p.setProperty("hole.texture", "taczbullethole:block/bullet_hole");
+        p.setProperty("hole.pictures", "true");
 
         p.setProperty("oneshot.enabled", "true");
         p.setProperty("oneshot.guns", "tacz:ai_awp");
