@@ -1,6 +1,254 @@
-# 开发笔记
+# Development Notes
 
-[English](../README.md) | **简体中文**
+**English** | [简体中文](#简体中文)
+
+This document records **why the code looks the way it does**. Every entry corresponds to
+a real failure, not preventative advice. Read it before changing anything -- it saves you
+from stepping on the same rake twice.
+
+---
+
+## 1. Project scope (important)
+
+This is an **optimization** mod: it only changes look and feel. It **adds no attachment
+slots, adds no items, and puts no content into gun packs**.
+
+`build.ps1` enforces this: if the packaged jar contains any leftover `barrelslot` /
+`BarrelSlotMixin` / `refit_slot_icons.png` style artifact, **the build fails outright**.
+
+---
+
+## 2. Build pipeline
+
+```
+build.ps1
+  +- 1) assemble the classpath (version json -> libraries\ + forge client jar + TaCZ jar)
+  +- 2) javac compiles src\**\*.java
+  +- 3) package (classes + resources -> staging -> jar)
+  +- 3b) ModsTomlCheck      really parses mods.toml with the same night-config Forge uses
+  +- 3c) MixinsCheck        scans @Mixin classes, cross-checks mixins.json for missing entries
+  +- 3d) InjectionCheck     walks TaCZ bytecode with ASM, verifies the injection point and argument order
+  +- 3e) CrosshairCheck / ConfigUpgradeCheck / HitFeedbackCheck
+  +- 4) verify jar contents (icon byte-identical, links present, no ITransformationService, no barrel leftovers)
+  +- 5) clean old jars / old gun packs out of the game folder
+```
+
+**Why the checkers are not optional**: each of the six corresponds to a real "I changed it
+and nothing happened" or "the game crashed". `InjectionCheck` especially -- what it
+verifies is **argument order**, see section 4.
+
+---
+
+## 3. PowerShell traps (build.ps1 must stay pure ASCII)
+
+### 3.1 Non-ASCII literals get read as ANSI mojibake
+
+Windows PowerShell 5.1 reads a **BOM-less** `.ps1` using the system ANSI code page.
+Non-ASCII literals land on disk as mojibake (file names are genuinely written wrong).
+Therefore:
+
+- **every string** in `build.ps1` / `tests\make_source_zip.ps1` must be ASCII, including
+  `throw` messages;
+- the output jar name is assembled from **code points**:
+  ```powershell
+  $OutPrefix = "[TaCZ" + [char]0xFF1A + [char]0x4F18 + [char]0x5316 + "]"
+  ```
+  `U+FF1A` is a **fullwidth colon** and is part of the file name. **Do not "fix" it into
+  an ASCII `:`.**
+
+### 3.2 Native stderr aborts the script
+
+Under `$ErrorActionPreference = "Stop"`, PowerShell wraps a native command's stderr as a
+`NativeCommandError`. And **javac writes ordinary notes to stderr** ("uses unchecked or
+unsafe operations", "[removal] ... has been deprecated") -- so a build that **compiled
+successfully** died on the javac line and packaged nothing.
+
+Approaches tried and abandoned:
+
+| Approach | Why it fails |
+|---|---|
+| `2>$null` | real compile errors also go to stderr and get swallowed with it |
+| `cmd.exe /c "... 2>file"` | cmd's command line caps at 8191 characters, and this project's **classpath alone is ~11300 characters** -- batching does not fit either |
+| javac's `@argfile` | it reads the file with the platform default charset; both UTF-8 and `Encoding.Default` were tried and the non-ASCII jar name never matched, javac kept reporting `invalid flag: tacz-1.20.1-...jar` |
+
+**Final approach**: use PowerShell's `&` (no length limit, quoting is correct) and only
+**redirect stderr to a temp file**. A `2>` redirect produces no error record; it just puts
+the bytes somewhere you can read them back.
+
+### 3.3 Native stdout gets counted into a function's return value
+
+```powershell
+& $Exe @args
+return $LASTEXITCODE      # wrong: returns "array of output lines + exit code"
+```
+
+So `$rc -ne 0` is **always true**. Real symptom: `ModsTomlCheck` printed `TOML ok: ...`
+and the script still reported `mods.toml validation failed`.
+
+**Fix**: capture stdout into a variable first, then read `$LASTEXITCODE`.
+
+### 3.4 Do not trust `$LASTEXITCODE` alone
+
+A tool that prints nothing can leave a **stale** exit code behind. Real incident:
+`MixinsCheck.class` was never produced, the exit code was fine, and the next step died with
+`ClassNotFoundException: MixinsCheck`.
+**Fix**: after reading the exit code, **confirm the output file exists**.
+
+### 3.5 Comma binds tighter than `+`
+
+```powershell
+@($v + '/a', $v + '/b')     # wrong: parses as $v + ('/a','/b')
+                            #   -> array concatenation -> one string "/a /b"
+                            #   -> 1 element, -contains is always False
+@("$v/a", "$v/b")           # ok: 2 elements
+@(($v + '/a'), ($v + '/b')) # ok too
+```
+
+Measured: `@($v+'/x',$v+'/y').Count` is **1**, `@("$v/x","$v/y").Count` is **2**.
+Real symptom: zip verification reported "missing build.ps1 resources/mods.toml ..." with
+**all five paths joined into one by spaces**.
+
+### 3.6 Other traps
+
+- `-contains` / `-notcontains` need the **collection on the left**.
+- `New-Object Type(a, b)` is parsed as an **array argument**; write `-ArgumentList`.
+- **Variable names are case-insensitive**: a function parameter `$Source` is **silently
+  overwritten** by a local `$source`.
+  Real incident: `$source = Measure-Lettering ...` replaced the image object with a
+  hashtable of measurement results, so `$Source.Width` became `$null`, scale became 0, and
+  every check still "passed".
+- On Windows, .NET's `ZipFile.CreateFromDirectory` writes zip entry names with
+  **backslashes**, but the ZIP spec requires `/`. Extraction breaks on Linux/macOS.
+  **Fix**: create each entry yourself with `CreateEntry`, using `/`.
+
+---
+
+## 4. Mixin injection: trust the bytecode, not the parameter names
+
+`CrouchAimSpreadMixin` injects into `AbstractGunItem.doBulletSpread` and zeroes the spread
+before it is handed to the projectile.
+
+**This trap was hit twice, with exactly opposite symptoms:**
+
+1. Written as `(..., float velocity, float degree)` (assuming T5 was the spread) -- it
+   actually set **T5 = muzzle velocity to 0** and let the spread through unchanged.
+   Symptom: **bullets dropped to the ground, knockback went to zero**, and "there is still
+   spread".
+2. Swapping it again based on "parameter names" -- which restored the wrong order and
+   reproduced the same bug.
+
+**Conclusion**: those TaCZ float parameters have **names that are inverted relative to
+their meaning**. The only reliable method is `tests\InjectionCheck.java`, which reads the
+bytecode and backtracks the **operand stack** at the `Projectile.m_37251_` call site to
+derive which method parameter feeds each argument:
+
+```
+m_37251_(Entity, x,   y,        z,       velocity, inaccuracy)
+                  |    |        |        |         |
+               fload8 fload9  fconst_0  fload6    fload7
+               =param7 =param8  const   =param5    =param6
+```
+
+So the handler signature is `(..., Projectile, int, float T5, float T6, float T7, float T8)`
+where **T5 = muzzle velocity (must be forwarded verbatim) and T6 = spread angle (the one
+to zero)**.
+
+The handler deliberately names them `t5..t8` instead of `velocity/degree`, so nobody can
+guess by feel again. **If the order is wrong, `build.ps1` fails the build.**
+
+### A related trap: `@ModifyVariable(ordinal=N)`
+
+An early version used `ordinal` to target a local variable slot; it **failed silently**
+(`require = 0` reports nothing) and users measured "still has spread". It now injects by
+**method name + argument position**, so there is no slot to guess.
+
+---
+
+## 5. Config migration
+
+`src\com\taczopt\config\ConfigFile.java` is the single entry point, and its rule is
+"**existing config wins**" -- once a key exists in the player's config file it is
+**never** updated to a new default.
+
+So every default change must add an entry to `RENAMED_DEFAULT`:
+
+```java
+{ "hit.offset_y", "14", "3" },   // only rewrites when the current value equals an old default
+```
+
+**Real incident**: `hit.offset_y`'s default was revised several times, old configs still
+said 14, the marker stayed too low, and the user's conclusion was "I changed it and nothing
+happened".
+
+Deleting a key requires adding it to `DEPRECATED_KEYS`, otherwise it stays in the player's
+config forever and looks like the feature still exists. That is how
+`hit.headshot_size` / `hit.headshot_spacing` were handled after the headshot marker went
+from "two X's" to a single orange X.
+
+Both rules are guarded by an offline test: `tests\ConfigUpgradeCheck.java`.
+
+> Warning: that checker **must use a fresh temp directory**. `ConfigFile.FILE` is
+> `static final`, fixed at class-load time from a system property, and `ensureLoaded()`
+> runs its migration only once. So switching directories inside the same JVM does nothing
+> (the first version did exactly that and kept reading the previous config).
+
+---
+
+## 6. The icon
+
+`src\resources\icon.png` is a **hand-finished final image**. The build copies it into the
+jar root **byte for byte** and **must not run it through any image library** -- a re-encode
+changes the file even when every pixel is identical
+(measured: 137,585 bytes -> 163,285 bytes, different SHA256).
+`build.ps1` compares the SHA256 of the source file against the copy inside the jar and
+fails the build if they differ.
+
+Where the icon comes from: TaCZ's own `logo.png` word mark as the base, with an
+`Optimization` line added above it. TaCZ's two word-mark lines (`TAC` ~112 px, `ZERO`
+~108 px) are the **same point size**, so adding a line above reads as the same word mark.
+
+A few typographic rules that were agreed on:
+
+- The added `Optimization` uses **`#999999`** (the grey of `ZERO`). White would smear into
+  the `TAC` above it.
+- It is **slightly smaller** than `ZERO`, so the original artwork stays dominant.
+- It sits **above** `TAC ZERO` and covers nothing.
+
+> Lesson: a 1440x1440 version was once used as the master and downscaled -- but that file
+> was itself a 256 image upscaled before the text was added, so scaling back down brought
+> the upscaling blur and sharpening halos with it.
+> **Use the native 256 export** (`src\resources\icon.png` currently is).
+>
+> Another trap: "adjacent pixel difference as a sharpness metric". That metric **rewards
+> sharpening halos** and gives you the opposite answer. Do not use it to pick artwork.
+
+---
+
+## 7. Other known traps
+
+- **PCL does not read a jar's icon.** It parses the **text fields** of `mcmod.info` /
+  `fabric.mod.json` / `META-INF/mods.toml`; icons come only from its online database
+  cache. So a locally compiled mod shows no icon in PCL's list -- that is PCL's design, not
+  a problem with the icon file. Forge's in-game Mods list reads `icon.png` from the jar
+  root and displays it fine.
+- **Never provide an `ITransformationService`.** Forge's `ModsFolderLocator` **silently
+  drops** any jar providing that service from the mod list (no log, no error) -- the entire
+  mod vanished once. `build.ps1` checks whether `META-INF/services/...` exists.
+- **One `modId` may have only one jar.** Leaving a copy under an old file name makes Forge
+  fail at startup. The file name has changed twice, so `build.ps1` automatically deletes
+  jars in `mods\` whose name contains `optimization` and which are not this build's output
+  (the match is deliberately narrow: only `optimization`).
+- **`ResourceLocation.tryParse` does not exist in 1.20.1**, and `new ResourceLocation(...)`
+  is marked `@Deprecated(forRemoval = true)`. The latter is the only option, and it needs
+  an explicit `@SuppressWarnings({"deprecation", "removal"})` -- `"deprecation"` alone does
+  not silence the `[removal]` category.
+
+---
+---
+
+# 简体中文
+
+[English](#development-notes) | **简体中文**
 
 这份文档记录**为什么代码长成这样**。每一条都对应一次真实的故障，不是预防性建议。
 改动之前先读一遍，能省掉重新踩一遍的时间。
