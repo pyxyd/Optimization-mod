@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
- * 指定枪械秒杀的配置。键前缀 {@code oneshot.}，存在合并版配置 config/taczopt.properties 里。
- * guns 支持：* 全部枪 / 精确 id / 通配符（* 与 ?），逗号分隔。热重载由 {@link ConfigFile} 统一负责。
- */
 public final class OneShotConfig {
 
     private static final String P = "oneshot.";

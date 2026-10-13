@@ -14,46 +14,28 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- * 开火自动开镜的配置 + 每把枪的开关。键前缀 {@code adsfire.}，
- * 存在合并版配置 config/taczopt.properties 里。
- *
- * <pre>
- * adsfire.enabled=true
- * adsfire.default=false                # 没单独设置过的枪，默认是否开启
- * adsfire.aim_wait_ticks=4
- * adsfire.hold_ticks=10
- * adsfire.release_when_stop=true
- * adsfire.debug_log=false
- * adsfire.gun.tacz:ai_awp=true         # 单独某把枪
- * </pre>
- *
- * <p>游戏内按 O 打开枪械面板就能逐把切换，写入的就是这些键。
- */
 public final class AdsFireConfig {
 
     private static final String P = "adsfire.";
-    /** 单枪设置在这个前缀之后（gun. 是为了兼容旧文件里的键名） */
+
     private static final String GUN_PREFIX = P + "gun.";
 
     private static volatile boolean enabled = true;
-    /** 开镜请求发出后至少等多少 tick 再开火 */
+
     private static volatile int aimWaitTicks = 4;
-    /** 松开左键后保持开镜多少 tick（20 tick = 1 秒） */
+
     private static volatile int holdTicks = 10;
-    /** 松手后是否自动收镜 */
+
     private static volatile boolean releaseWhenStop = true;
-    /** 没有单独配置过的枪，默认是否启用 */
+
     private static volatile boolean defaultOn = false;
-    /** 排错用：开火拦截时打日志 */
+
     private static volatile boolean debugLog = false;
 
     private static final Map<String, Boolean> PER_GUN = new HashMap<String, Boolean>();
 
     private AdsFireConfig() {
     }
-
-    // ------------------------------------------------------------------ 读取
 
     public static void ensureLoaded() {
         ConfigFile.ensureLoaded();
@@ -87,14 +69,11 @@ public final class AdsFireConfig {
         }
     }
 
-    // ------------------------------------------------------------------ 查询
-
     public static boolean enabled() {
         ensureLoaded();
         return enabled;
     }
 
-    /** 这把枪是否启用了「开火先开镜」 */
     public static boolean isOn(String gunId) {
         ensureLoaded();
         if (!enabled || gunId == null) {
@@ -171,18 +150,11 @@ public final class AdsFireConfig {
         return debugLog;
     }
 
-    // ------------------------------------------------------------------ 枪械列表
-
-    /** 面板里的一行：一把枪 */
     public static final class GunEntry {
         public final String id;
         public final String name;
         public final String type;
-        /**
-         * 显示名重复时用来区分的后缀，例如 {@code "foot_stool"}。
-         * 枪包里有同名的不同枪（三角洲包 m14_short 和 m14_short_foot_stool 都叫 "Mk14"），
-         * 不区分的话面板里看着像重复项。没重名时是空串。
-         */
+
         public final String suffix;
 
         GunEntry(String id, String name, String type, String suffix) {
@@ -192,7 +164,6 @@ public final class AdsFireConfig {
             this.suffix = suffix == null ? "" : suffix;
         }
 
-        /** 列表里显示的名字（重名的带上 id 里能区分的部分） */
         public String displayName() {
             return suffix.isEmpty() ? name : name + " [" + suffix + "]";
         }
@@ -200,7 +171,6 @@ public final class AdsFireConfig {
 
     private static List<GunEntry> cachedList = null;
 
-    /** 列出当前装的所有枪（客户端索引）。结果会被缓存。 */
     public static List<GunEntry> listGuns() {
         if (cachedList != null) {
             return cachedList;
@@ -226,7 +196,7 @@ public final class AdsFireConfig {
                 out.add(new GunEntry(id, name == null ? id : name, type == null ? "" : type, null));
             }
         } catch (RuntimeException ignored) {
-            // TaCZ 还没加载完 -> 返回空表
+
         }
         markDuplicateNames(out);
         Collections.sort(out, new Comparator<GunEntry>() {
@@ -240,17 +210,6 @@ public final class AdsFireConfig {
         return out;
     }
 
-    /**
-     * 给显示名重复的枪补一个区分后缀。
-     *
-     * <p>实例：三角洲枪包里 {@code wemql_r:m14_short} 和 {@code wemql_r:m14_short_foot_stool}
-     * 的显示名都是 "Mk14"；{@code m14_long} 和 {@code m14_long_foot_stool} 都叫 "M14 EBR"。
-     * 它们是不同的枪（一个有脚架一个没有），但不区分的话面板里就是两条一模一样的条目。
-     *
-     * <p>后缀取法：把同组 id 的公共前缀去掉，剩下的部分。例如 m14_short / m14_short_foot_stool
-     * 的公共前缀是 "m14_short"，于是两个后缀分别是 "" 和 "foot_stool"；
-     * 空的那个说明它本来就是"基础款"，用完整 id 兜底以免显示成空括号。
-     */
     private static void markDuplicateNames(List<GunEntry> list) {
         Map<String, Integer> count = new HashMap<String, Integer>();
         for (GunEntry e : list) {

@@ -4,16 +4,6 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.regex.*;
 
-/**
- * 构建期校验：taczopt.mixins.json 必须列出所有带 @Mixin 的类。
- *
- * <p>为什么需要：漏一个 @Mixin 类不会导致编译失败，也不会在启动时报错，
- * 而是等到运行到那条代码路径时才抛
- * {@code IllegalClassLoadError: Illegal classload request for accessor mixin ...}
- * —— 直接崩游戏。合并模组时就漏抄过两个 @Accessor 接口，导致"打枪出现弹孔就崩"。
- *
- * <p>用法：MixinsCheck <srcRoot> <mixinJsonPath>
- */
 public class MixinsCheck {
 
     private static final Pattern MIXIN_ANNOTATION = Pattern.compile("@Mixin\\s*\\(");
@@ -30,7 +20,6 @@ public class MixinsCheck {
             declared.add(m.group(1));
         }
 
-        // 扫描源码里所有 @Mixin 类，按包名 + 简单名收集
         Map<String, Path> mixinClasses = new TreeMap<>();
         Files.walk(srcRoot).filter(p -> p.toString().endsWith(".java")).forEach(p -> {
             try {
@@ -46,7 +35,7 @@ public class MixinsCheck {
                 String simple = p.getFileName().toString().replace(".java", "");
                 mixinClasses.put(pkg + "." + simple, p);
             } catch (IOException ignored) {
-                // 读不了就跳过
+
             }
         });
 
@@ -61,7 +50,7 @@ public class MixinsCheck {
             String fqcn = e.getKey();
             String pkg = fqcn.substring(0, fqcn.lastIndexOf('.'));
             String simple = fqcn.substring(fqcn.lastIndexOf('.') + 1);
-            // 只检查与本配置同包的那些（accessor 等）
+
             if (pkg.equals("com.taczopt.mixin") && !declared.contains(simple)) {
                 missing.add(simple);
             }

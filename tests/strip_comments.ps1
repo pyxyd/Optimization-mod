@@ -1,30 +1,4 @@
-# Removes comments from Java and PowerShell sources in this repository.
-#
-#   powershell -ExecutionPolicy Bypass -File .\tests\strip_comments.ps1 -DryRun
-#   powershell -ExecutionPolicy Bypass -File .\tests\strip_comments.ps1
-#
-# WHY a real scanner instead of a regex: a naive "remove everything after //" destroys
-# any line containing a URL or a string with a slash. Examples that exist in this very
-# codebase:
-#     "Config: config/taczopt.properties | GitHub: https://github.com/..."
-#     $svc = "META-INF/services/cpw.mods.modlauncher.api.ITransformationService"
-#     'https://modrinth.com/mod/optimization-forge'
-# A regex cannot tell a comment from a URL. This walks the text character by character
-# and tracks whether it is inside a string, a char literal, or between """ and @"/"@.
-#
-# What it does NOT touch: string literals, char literals, and the code itself. Only
-# // line comments, /* block comments */ and PowerShell's <# block comments #> go away.
-#
-# Guard rails:
-#   * refuses to run on a dirty git tree unless -Force is given, so the change can
-#     always be reviewed with "git diff" and reverted with "git checkout";
-#   * -DryRun reports what would change without writing;
-#   * reports the before/after line counts per file.
-#
-# ⚠ Comments in the PowerShell scripts are load-bearing documentation (they explain the
-#   stderr/exit-code/comma-precedence traps). Stripping them is permanent -- recover them
-#   with "git checkout <file>" if needed, or read the matching notes kept by hand in
-#   docs\DEVELOPMENT.md and README.md.
+
 $ErrorActionPreference = 'Stop'
 
 $ToolsDir = $PSScriptRoot
@@ -54,12 +28,7 @@ if (-not $DryRun -and -not $Force) {
 }
 
 function Remove-SlashComments {
-    <#
-      Strips // and /* */ comments from a C-like file (Java).
-      Tracks string and char literals so a "//" inside them is left alone.
-      Text blocks (""" ... """) are handled too: they may contain anything.
-      Returns @{ Text; Removed }.
-    #>
+
     param([string]$Text)
 
     $sb = New-Object System.Text.StringBuilder
@@ -82,7 +51,7 @@ function Remove-SlashComments {
         }
         if ($inBlock) {
             if ($c -eq '*' -and $c2 -eq '/') { $inBlock = $false; $removed += 2; $i += 2; continue }
-            if ($c -eq "`n") { [void]$sb.Append($c) }   # keep line numbering sane
+            if ($c -eq "`n") { [void]$sb.Append($c) }
             else { $removed++ }
             $i++; continue
         }
@@ -105,7 +74,6 @@ function Remove-SlashComments {
             $i++; continue
         }
 
-        # not inside anything
         if ($c -eq '"' -and $c2 -eq '"' -and ($i + 2 -lt $n) -and $Text[$i + 2] -eq '"') {
             [void]$sb.Append('"""'); $inTextBlock = $true; $i += 3; continue
         }
@@ -120,13 +88,7 @@ function Remove-SlashComments {
 }
 
 function Remove-PowerShellComments {
-    <#
-      Strips hash and angle-bracket block comments from a PowerShell script.
-      Tracks single-quoted and double-quoted strings (including doubled-quote escapes)
-      so a hash sign inside a string -- a colour code, a URL fragment -- is left alone.
-      PowerShell has no C-style block comments; a "//" only ever appears inside a URL
-      here, never as a comment, so this does not treat it as one.
-    #>
+
     param([string]$Text)
 
     $sb = New-Object System.Text.StringBuilder
@@ -177,7 +139,7 @@ function Remove-PowerShellComments {
 }
 
 function Compress-BlankLines {
-    <# Collapses runs of 3+ blank lines down to one, and trims trailing blank lines. #>
+
     param([string]$Text)
     $lines = $Text -split "`n"
     $out = New-Object System.Collections.ArrayList

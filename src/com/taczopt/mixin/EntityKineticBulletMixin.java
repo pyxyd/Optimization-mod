@@ -12,21 +12,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-/**
- * 让指定枪械（默认 AWP）命中即秒杀。
- *
- * 注入点：TaCZ 的 EntityKineticBullet.tacAttackEntity(...) 里对 Entity.hurt(DamageSource, float)
- * 的两处调用（反汇编确认偏移 53/75，分别对应多部件实体的各个部分）。
- *
- * 做法：
- *   1) 保留 TaCZ 原本的 DamageSource，只把伤害数值换成 damage（默认 10 万）——
- *      这样死亡信息、击杀归属、命中音效都还是 TaCZ 那一套；
- *   2) 若打完对方还活着（免疫/减伤/Boss），再调用 Entity.kill()（等价 /kill，
- *      使用 genericKill 伤害类型，无视无敌与减伤）强制击杀。
- *   affect_players = false 时，目标是玩家就走原版伤害。
- *
- * 注意：伤害结算在服务端，多人服务器需要服务端也装这个模组。
- */
 @Mixin(EntityKineticBullet.class)
 public class EntityKineticBulletMixin {
 

@@ -13,9 +13,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-/**
- * 打开枪械面板的按键（默认 O，可在 选项 → 按键设置 → 「TaCZ 附加」 里改）。
- */
 @Mod.EventBusSubscriber(modid = TaczOptimizeMod.MOD_ID, value = Dist.CLIENT)
 public final class AdsFireKeys {
 

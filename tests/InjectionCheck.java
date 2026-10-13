@@ -13,35 +13,6 @@ import java.util.Deque;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-/**
- * 离线校验：{@code CrouchAimSpreadMixin} 的注入目标存在，且<b>参数映射推导正确</b>。
- *
- * <h2>为什么需要这个</h2>
- * {@code MixinsCheck} 只校验类有没有注册进 {@code taczopt.mixins.json}，
- * 它<b>不检查注入点能不能匹配、参数顺序对不对</b>。
- *
- * <p>这里踩过两次真实的坑：
- * <ol>
- *   <li>{@code @ModifyVariable(ordinal = 10)} 靠局部变量槽位定位，静默失效
- *       （{@code require = 0} 不报错），用户实测"还是有扩散"；</li>
- *   <li>改成按 {@code doBulletSpread} 的<b>形参名</b>写处理器之后，
- *       发现 TaCZ 后两个 float 形参的名字和实际语义是<b>反的</b>
- *       （形参叫 velocity 的那个其实是扩散角）——
- *       照着名字写会把弹速置 0、扩散原样放过，现象同样是"还是有扩散"。</li>
- * </ol>
- *
- * <h2>校验方法</h2>
- * 用 ASM 读字节码，对 {@code Projectile.m_37251_} 那个调用点<b>回溯操作数栈</b>，
- * 推出每个 float 实参来自哪条指令（{@code fload N} / {@code fconst_0} / 方法返回值），
- * 再把 {@code fload N} 换算成"方法参数表里的第几个参数"。
- * 这是字节码层面的事实，不依赖形参名 —— 形参名正是出过错的地方。
- *
- * <p>跑法（源码目录下）：
- * <pre>
- *   javac -encoding UTF-8 -cp "&lt;asm&gt;;&lt;asm-tree&gt;" -d check tools\InjectionCheck.java
- *   java  -cp "check;&lt;asm&gt;;&lt;asm-tree&gt;" InjectionCheck &lt;tacz.jar&gt;
- * </pre>
- */
 public final class InjectionCheck implements Opcodes {
 
     private static final String TARGET = "com/tacz/guns/api/item/gun/AbstractGunItem";
@@ -73,7 +44,7 @@ public final class InjectionCheck implements Opcodes {
 
         Type[] params = Type.getArgumentTypes(target.desc);
         System.out.println("  参数表: " + params.length + " 个");
-        // 实例方法：槽位 0 = this，所以参数 i 在槽位 i+1
+
         String[] slotName = new String[128];
         for (int i = 0; i < params.length; i++) {
             slotName[i + 1] = "参数" + i + "(" + shortName(params[i]) + ")";
@@ -146,11 +117,7 @@ public final class InjectionCheck implements Opcodes {
 
         System.out.println();
         System.out.println("=== 端到端断言：mixin 处理器的形参顺序 ===");
-        // 处理器的形参顺序必须和目标方法的形参表**逐位一致**，
-        // 否则 @Inject 捕获到的实参就错位了。
-        // 这条断言就是为了挡住"按形参名猜顺序"这个已经犯过两次的错：
-        //   错法：把 T5 当成 degree -> 实际把弹速置 0
-        //         （现象：子弹落地、击退变零，而且扩散一点没变）
+
         String velFrom = paramOf(vel);
         String inaccFrom = paramOf(inacc);
         System.out.println("  调用点实际喂给 m_37251_ 的：");
@@ -178,14 +145,6 @@ public final class InjectionCheck implements Opcodes {
         }
     }
 
-    /**
-     * 从"fload N  = 参数M(float)"这种描述里取出它对应处理器里的第几个 float。
-     *
-     * <p>{@code doBulletSpread} 的形参表是
-     * {@code (0:ShooterDataHolder, 1:ItemStack, 2:LivingEntity, 3:Projectile, 4:int,
-     * 5:float, 6:float, 7:float, 8:float)}，
-     * 所以参数 5/6/7/8 依次对应处理器里的 T5/T6/T7/T8。
-     */
     private static String paramOf(String desc) {
         if (desc == null || !desc.contains("参数")) {
             return "(无法判定)";

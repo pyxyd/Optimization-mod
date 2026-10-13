@@ -3,24 +3,6 @@ import com.taczopt.crosshair.HipFireSpread;
 import com.taczopt.crosshair.CrosshairLogic.Bar;
 import com.taczopt.crosshair.HipFireSpread.Stance;
 
-/**
- * 离线校验腰射准星的纯逻辑（不启动游戏）。
- *
- * <p>{@link CrosshairLogic} 特意不引用任何游戏类，就是为了能在这里直接跑。
- * 校验三件事：
- * <ol>
- *   <li><b>空心十字的形状</b>：四条线、中间留空、关于中心对称、长度和线宽正确。
- *       最难发现的是"中间没留空"（画出来变成实心十字）和"四条线不对称"。</li>
- *   <li><b>扩散换算</b>：间距随扩散增大但被上限夹住，且永远大于基础值。</li>
- *   <li><b>不会跑到屏幕外</b>：横跨范围有个合理上限。</li>
- * </ol>
- *
- * <p>跑法（源码目录下）：
- * <pre>
- *   javac -encoding UTF-8 -cp classes -d check tools\CrosshairCheck.java
- *   java -cp "check;classes" CrosshairCheck
- * </pre>
- */
 public final class CrosshairCheck {
 
     private static int failures = 0;
@@ -30,7 +12,6 @@ public final class CrosshairCheck {
         Bar[] c = CrosshairLogic.cross(8, 5, 2);
         eqInt("一共四条线", 4, c.length);
 
-        // 上 / 下 / 左 / 右 的顺序
         Bar up = c[0];
         Bar down = c[1];
         Bar left = c[2];
@@ -41,10 +22,6 @@ public final class CrosshairCheck {
         check("左：在中心左侧（x 全为负）", left.x0() < 0 && left.x1() < 0);
         check("右：在中心右侧（x 全为正）", right.x0() > 0 && right.x1() > 0);
 
-        // 关键：中间必须留空
-        // 对称性：上下/左右必须逐格镜像。
-        // 原版 MC 准星在这里是不对称的（横向循环 -1..4、纵向 -1..5），
-        // 第一版照抄了那个结构，结果"右边和下边各少 1 像素"被用户看出来。
         eqInt("上的内侧 = -(gap+1)", -9, up.y1());
         eqInt("下的内侧 = +(gap+1)", 9, down.y0());
         eqInt("左的内侧 = -(gap+1)", -9, left.x1());
@@ -57,20 +34,16 @@ public final class CrosshairCheck {
         check("左右外端对称", left.x0() + right.x1() == 0);
         check("中间是空的（不是实心十字）", up.y1() < 0 && down.y0() > 0);
 
-        // 长度：gap + arm
         eqInt("上的外侧 = -(gap+arm)", -13, up.y0());
         eqInt("下的外侧 = +(gap+arm)", 13, down.y1());
         eqInt("上的长度 = arm(5) 格", 5, up.y1() - up.y0() + 1);
 
-        // 线宽
         eqInt("上的线宽 = 2", 2, up.x1() - up.x0() + 1);
         eqInt("左的线宽 = 2", 2, left.y1() - left.y0() + 1);
 
-        // 对称
         check("上下对称", up.x0() == down.x0() && up.x1() == down.x1());
         check("左右对称", left.y0() == right.y0() && left.y1() == right.y1());
-        // 下面这些是"留空一样多、长度一样"这类不变量。
-        // 逐格镜像的断言在上面（这是用户实际看出来的那个问题）。
+
         eqInt("上下的留空一样多", -up.y1() - 1, down.y0() - 1);
         eqInt("上下的长度一样", up.y1() - up.y0(), down.y1() - down.y0());
         eqInt("左右的留空一样多", -left.x1() - 1, right.x0() - 1);
@@ -97,7 +70,7 @@ public final class CrosshairCheck {
 
         System.out.println();
         System.out.println("=== 扩散换算：间距 = 扩散值(= 10 - 腰射精度) * 倍率 ===");
-        // gapFor(inaccuracy, multiplier, floor, max)
+
         eqInt("精准手枪 stand=1.25 -> gap 1", 1, CrosshairLogic.gapFor(1.25f, 1.0, 1, 60));
         eqInt("m1911 stand=1.5 -> gap 2（四舍五入）", 2, CrosshairLogic.gapFor(1.5f, 1.0, 1, 60));
         eqInt("glock stand=2 -> gap 2", 2, CrosshairLogic.gapFor(2f, 1.0, 1, 60));
@@ -113,9 +86,7 @@ public final class CrosshairCheck {
                 CrosshairLogic.gapFor(1000f, 1.0, 80, 20) == 80);
         check("扩散越大间距越大（单调）",
                 CrosshairLogic.gapFor(1.5f, 1.0, 1, 60) <= CrosshairLogic.gapFor(8f, 1.0, 1, 60));
-        // 关键回归点：公式必须是"10 - 精度"，也就是直接用扩散值。
-        // 早先版本写成 base + inaccuracy*0.8，精准枪和散射枪的准星几乎一样大，
-        // 玩家反馈"腰射不准"就是这个。
+
         check("精准枪(1.5) 与 散射枪(8.0) 的准星差距明显（>4 像素）",
                 CrosshairLogic.gapFor(8f, 1.0, 1, 60) - CrosshairLogic.gapFor(1.5f, 1.0, 1, 60) > 4);
 
@@ -128,7 +99,7 @@ public final class CrosshairCheck {
 
         System.out.println();
         System.out.println("=== 照搬 TaCZ 的档位判定（顺序错就全错）===");
-        // InaccuracyType.getInaccuracyType 的顺序：AIM > LIE > SNEAK > MOVE > STAND
+
         eqStance("开镜优先于一切（开镜+蹲+移动 仍是 AIM）",
                 Stance.AIM, HipFireSpread.stanceFor(1.0f, true, true, true));
         check("瞄准进度 0.99 不算开镜",

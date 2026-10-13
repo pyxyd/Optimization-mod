@@ -8,11 +8,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 import java.util.function.Function;
 
-/**
- * 取自定义弹孔贴图在方块图集里的 sprite。
- * 每次实时查表（不缓存），这样资源包 F3+T 热重载后立刻生效；
- * 贴图不存在时返回 null（调用方回退到 TaCZ 原版弹孔），避免画成紫黑"丢失贴图"方块。
- */
 public final class TBHTextures {
 
     private TBHTextures() {

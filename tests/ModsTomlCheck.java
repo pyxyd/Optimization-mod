@@ -5,13 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-/**
- * Build-time check: parse mods.toml with the same TOML library Forge uses (night-config).
- *
- * <p>为什么需要它：TOML 多行字符串是三个单引号，写成四个（''''）不是 Java 编译错误，
- * 用"数引号个数"这种土办法也查不出来，但 Forge 会在启动最早期直接抛
- * "contains a corrupt or misconfigured toml"，整个游戏起不来。所以这里用真解析器验一遍。
- */
 public class ModsTomlCheck {
     public static void main(String[] args) {
         try {

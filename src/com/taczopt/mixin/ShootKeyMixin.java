@@ -15,14 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * 记录"玩家正按着左键"这件事，供会话在松手后计时收镜。
- *
- * <p>注意：这里**不再**负责拦开火。拦截全部交给
- * {@link LocalPlayerShootMixin}（拦在 shoot() 上，和 tick 顺序无关）。
- * 早期版本在 autoShoot 的 HEAD 里 cancel，因为 autoShoot 和本模组的 tick 处理器
- * 监听同一个事件、顺序不可控，会出现"autoShoot 先跑 -> 直接开火"的漏网情况。
- */
 @Mixin(ShootKey.class)
 public class ShootKeyMixin {
 

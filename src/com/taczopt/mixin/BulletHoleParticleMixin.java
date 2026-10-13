@@ -23,30 +23,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * 两层结构：
- *   1) 方块面上 = TaCZ 原版弹孔，完全不做任何改动（还是它原来的"先亮块、30 tick 内变黑、
- *      按 BulletHoleParticleLife 存活"那一套）；
- *   2) 悬浮在上面 = 你自己的图片，沿方块面法线抬高 logo_lift 格（像皮肤外层），
- *      显示 logo_hold 后开始 logo_fade 淡出，淡完就只剩原版弹孔。
- *
- * 做法：在 TaCZ 的 render（m_5744_）末尾往同一个 buffer 追加一个面片（贴图仍绑定方块图集），
- * 几何自己算：
- *   位置 = 粒子位置 - 相机位置（MC 粒子在相机空间渲染）
- *   朝向 = direction.getRotation()（m_253075_），抬高方向 = 该四元数作用在 (0,1,0) 上的法线
- *   UV 映射与 TaCZ 一致（p0=(u1,v1) p1=(u1,v0) p2=(u0,v0) p3=(u0,v1)），
- *   所以之前调好的 flip_u / flip_v 方向不变。
- *
- * 名称来源（javap 反汇编已安装的 TaCZ 1.1.8-hotfix2 / MC srg jar 确认）：
- *   m_5744_ = render, m_253075_ = Direction.getRotation, m_90583_ = Camera.getPosition
- *   Vec3: m_7096_ = x, m_7098_ = y, m_7094_ = z
- *   Mth.m_14139_ = lerp, LightTexture.m_109885_ = pack
- *   VertexConsumer: m_5483_ = vertex, m_7421_ = uv, m_85950_ = color, m_85969_ = uv2
- */
 @Mixin(BulletHoleParticle.class)
 public class BulletHoleParticleMixin {
 
-    /** TaCZ 自己的私有字段：弹孔贴在哪个方块面上 */
     @Shadow
     @Final
     private Direction direction;
@@ -54,7 +33,6 @@ public class BulletHoleParticleMixin {
     @Unique
     private boolean tbhCustom = false;
 
-    /** 是否要改这颗弹孔在方块面上的大小（默认对全部枪生效，和悬浮层列表独立） */
     @Unique
     private boolean tbhResize = false;
 
@@ -82,7 +60,6 @@ public class BulletHoleParticleMixin {
         TBHLog.applied(gunId);
     }
 
-    /** 每帧把方块面上原版弹孔的大小设成 hole_scale 倍（TaCZ 原本是 0.05） */
     @Inject(method = "m_5744_", at = @At("HEAD"))
     private void tbhResizeHole(CallbackInfo ci) {
         if (!this.tbhResize) {
@@ -92,7 +69,6 @@ public class BulletHoleParticleMixin {
         ((SingleQuadParticleAccessorMixin) (Object) this).setF_107663_(0.05F * TBHConfig.holeScale);
     }
 
-    /** 在 TaCZ 画完原版弹孔之后，追加一层悬浮的 logo 面片 */
     @Inject(method = "m_5744_", at = @At("TAIL"))
     private void tbhDrawLogo(VertexConsumer buffer, Camera camera, float partialTicks, CallbackInfo ci) {
         if (!this.tbhCustom) {

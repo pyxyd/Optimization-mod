@@ -4,10 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 日志（内容保持纯 ASCII，方便在 latest.log 里搜索 "taczbullethole"）。
- * 只打关键节点，避免每颗弹孔刷屏。
- */
 public final class TBHLog {
 
     private static final Logger LOGGER = LogManager.getLogger("taczopt");
@@ -25,7 +21,6 @@ public final class TBHLog {
                 TBHConfig.holeScale, TBHConfig.logoLift, TBHConfig.logoHold, TBHConfig.logoFade, TBHConfig.alpha);
     }
 
-    /** 自动识别的判定过程；只打前若干条，方便确认规则对不对 */
     public static void autoCheck(String gunId, String fromIndex, String fromConvention, String fromItem, boolean special) {
         if (autoLogged >= 10) {
             return;

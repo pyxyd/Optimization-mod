@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
- * 混合开镜的配置。键前缀 {@code hybridaim.}，存在合并版配置 config/taczopt.properties 里。
- * 热重载由 {@link ConfigFile} 统一负责。
- */
 public final class HybridAimConfig {
 
     private static final String P = "hybridaim.";

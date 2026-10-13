@@ -1,6 +1,5 @@
 package com.taczopt.hybridaim;
 
-/** 按键状态机 + 拦截是否生效的标记 */
 public final class HybridAimState {
 
     private static boolean pressed = false;
@@ -35,7 +34,6 @@ public final class HybridAimState {
         openedByPress = value;
     }
 
-    /** TaCZ 自己的开镜键处理被成功拦下（= 混合逻辑独占输入） */
     public static void markSuppressionSeen() {
         suppressionSeen = true;
     }

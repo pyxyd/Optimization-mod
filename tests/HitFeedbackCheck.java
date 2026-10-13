@@ -1,25 +1,6 @@
 import com.taczopt.hitfeedback.HitFeedbackLogic;
 import com.taczopt.hitfeedback.HitFeedbackLogic.Stroke;
 
-/**
- * 离线校验命中标记的纯逻辑（不启动游戏）。
- *
- * <p>{@link HitFeedbackLogic} 特意不引用任何游戏类，就是为了能在这里直接跑。
- * 校验三件事：
- * <ol>
- *   <li><b>X 的形状</b>：四条臂、45 度、中间留空、臂朝四个象限；
- *       而且"横跨半径"必须真是 {@code outer}（早先按轴向长度算过，X 小了一圈）。</li>
- *   <li><b>标记形态唯一</b>：爆头和非爆头画出来的线段<b>完全一样</b>
- *       —— 部位只靠颜色区分，所以标记不会因命中部位而变形或跳动。</li>
- *   <li><b>颜色</b>：普通白、爆头橙、致死红，且致死压过爆头。</li>
- * </ol>
- *
- * <p>跑法（源码目录下）：
- * <pre>
- *   javac -encoding UTF-8 -cp classes -d check tools\HitFeedbackCheck.java
- *   java -cp "check;classes" HitFeedbackCheck
- * </pre>
- */
 public final class HitFeedbackCheck {
 
     private static int failures = 0;
@@ -37,7 +18,6 @@ public final class HitFeedbackCheck {
         }
         check("每条臂都是 45 度（|dx| == |dy|）", all45);
 
-        // 四条臂分别落在四个象限
         boolean[] quad = new boolean[4];
         for (Stroke s : one) {
             int qx = s.x0() < 0 ? 0 : 1;
@@ -47,7 +27,6 @@ public final class HitFeedbackCheck {
         boolean allQuad = quad[0] && quad[1] && quad[2] && quad[3];
         check("四条臂分别指向四个象限", allQuad);
 
-        // 关键回归点：横跨半径必须真是 outer，不能被 1/sqrt(2) 缩掉
         int maxReach = 0;
         for (Stroke s : one) {
             maxReach = Math.max(maxReach, Math.abs(s.x0()));
@@ -65,8 +44,7 @@ public final class HitFeedbackCheck {
 
         System.out.println();
         System.out.println("=== 标记形态唯一（爆头不再画双 X）===");
-        // 爆头曾经会画 8 条线段（两个 X 上下叠），实测糊成一团已删除。
-        // 现在唯一入口是 markerStrokes，这里守住"它永远只给 4 条"。
+
         eqInt("单 X 永远是 4 条线段（不会变成 8 条双 X）", 4,
                 HitFeedbackLogic.markerStrokes(7, 2).length);
         eqInt("横跨半径改成 4 也只有 4 条（历史上爆头用过 4）", 4,

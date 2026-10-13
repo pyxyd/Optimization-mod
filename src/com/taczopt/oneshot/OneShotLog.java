@@ -3,7 +3,6 @@ package com.taczopt.oneshot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** 日志保持纯 ASCII，方便在 latest.log 里搜 "taczoneshot"。 */
 public final class OneShotLog {
 
     private static final Logger LOGGER = LogManager.getLogger("taczopt");

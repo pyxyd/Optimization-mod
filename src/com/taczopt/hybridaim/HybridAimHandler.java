@@ -17,17 +17,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-/**
- * 混合开镜：
- *   按下时：如果本来开着镜 -> 立刻关（点一下就是关）；
- *           如果本来关着 -> 先开镜（长按期间就靠它保持），并记下这一轮是我们开的；
- *   松开时：若这一轮是我们开的、且按住时间 >= short_press_ms -> 收镜（长按松开 = 收）；
- *           否则保持（= 短按切换开）。
- * 鼠标和键盘都监听，所以开镜键绑到键盘也能用。
- *
- * TaCZ 自己那套开镜键处理由 AimKeyMixin 拦掉；如果拦截没生效，
- * 这里会直接降级退出（避免两边同时切来切去），并在日志里警告。
- */
 @Mod.EventBusSubscriber(modid = TaczOptimizeMod.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class HybridAimHandler {
 
@@ -57,7 +46,7 @@ public final class HybridAimHandler {
         }
         int action = event.getAction();
         if (action != GLFW.GLFW_PRESS && action != GLFW.GLFW_RELEASE) {
-            return; // 忽略长按重复事件
+            return;
         }
         handle(action == GLFW.GLFW_PRESS);
     }
@@ -69,7 +58,7 @@ public final class HybridAimHandler {
             return;
         }
         if (!HybridAimState.suppressionSeen()) {
-            // TaCZ 自己的处理还在，别抢输入，否则会两边各切一次
+
             HybridAimLog.fallback();
             return;
         }
