@@ -243,7 +243,10 @@ public final class PicturePack {
                 + "    \"description\": \"Optimization for Tacz - bullet hole picture (auto-generated)\"\n"
                 + "  }\n"
                 + "}\n";
-        Files.write(base.resolve("pack.mcmeta"), meta.getBytes("UTF-8"));
+        Path assets = base.resolve("assets");
+        Files.createDirectories(assets);
+        Files.write(assets.resolve("pack.mcmeta"), meta.getBytes("UTF-8"));
+        Files.deleteIfExists(base.resolve("pack.mcmeta"));
     }
 
     private static void deleteRecursively(Path dir) throws IOException {
@@ -269,27 +272,7 @@ public final class PicturePack {
         }
     }
 
-    private static void deleteEmptyDirectories(Path dir) {
-        try {
-            if (!Files.isDirectory(dir)) {
-                return;
-            }
-            List<Path> all = new ArrayList<Path>();
-            collect(dir, all);
-            for (int i = all.size() - 1; i >= 0; i--) {
-                Path p = all.get(i);
-                if (Files.isDirectory(p)) {
-                    try (DirectoryStream<Path> s = Files.newDirectoryStream(p)) {
-                        if (!s.iterator().hasNext()) {
-                            Files.deleteIfExists(p);
-                        }
-                    }
-                }
-            }
-        } catch (IOException ignored) {
 
-        }
-    }
 
     private static void logMissing() {
         if (logged) {

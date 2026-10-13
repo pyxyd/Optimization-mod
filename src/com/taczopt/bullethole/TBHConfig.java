@@ -45,6 +45,7 @@ public final class TBHConfig {
     private static String lastLogoRaw = "*";
     private static String lastHoleRaw = "*";
     private static boolean lastPictures = true;
+    private static String lastSignature = null;
 
     private TBHConfig() {
     }
@@ -71,12 +72,28 @@ public final class TBHConfig {
     public static void reloadIfChanged() {
         ensureLoaded();
         ConfigFile.reloadIfChanged();
-        String guns = ConfigFile.get(P + "guns", "*");
-        String holeGuns = ConfigFile.get(P + "hole_scale_guns", "*");
-        boolean pics = ConfigFile.getBool(P + "pictures", true);
-        if (!guns.equals(lastLogoRaw) || !holeGuns.equals(lastHoleRaw) || pics != lastPictures) {
+        String sig = signature();
+        if (lastSignature == null || !sig.equals(lastSignature)) {
             load();
         }
+    }
+
+    private static String signature() {
+        StringBuilder sb = new StringBuilder(96);
+        sb.append(ConfigFile.getBool(P + "enabled", true)).append('|')
+          .append(ConfigFile.get(P + "guns", "*")).append('|')
+          .append(ConfigFile.get(P + "texture", "taczbullethole:block/bullet_hole")).append('|')
+          .append(ConfigFile.getDouble(P + "scale", 1.0D)).append('|')
+          .append(ConfigFile.getDouble(P + "hole_scale", 0.6D)).append('|')
+          .append(ConfigFile.get(P + "hole_scale_guns", "*")).append('|')
+          .append(ConfigFile.getDouble(P + "logo_lift", 0.03D)).append('|')
+          .append(ConfigFile.getDouble(P + "alpha", 1.0D)).append('|')
+          .append(ConfigFile.getInt(P + "logo_hold", 20)).append('|')
+          .append(ConfigFile.getInt(P + "logo_fade", 20)).append('|')
+          .append(ConfigFile.getBool(P + "flip_u", false)).append('|')
+          .append(ConfigFile.getBool(P + "flip_v", true)).append('|')
+          .append(ConfigFile.getBool(P + "pictures", true));
+        return sb.toString();
     }
 
     private static void load() {
@@ -96,6 +113,7 @@ public final class TBHConfig {
         lastHoleRaw = ConfigFile.get(P + "hole_scale_guns", "*");
         lastPictures = ConfigFile.getBool(P + "pictures", true);
         pictures = lastPictures;
+        lastSignature = signature();
         LOGO.parse(lastLogoRaw);
         HOLE.parse(lastHoleRaw);
     }
@@ -159,7 +177,7 @@ public final class TBHConfig {
 
     public static boolean applies(String gunId) {
         ensureLoaded();
-        if (!enabled || isTacz(gunId)) {
+        if (!enabled || !pictures || isTacz(gunId)) {
             return false;
         }
         return LOGO.matches(gunId);
@@ -167,7 +185,7 @@ public final class TBHConfig {
 
     public static boolean holeApplies(String gunId) {
         ensureLoaded();
-        if (!enabled || isTacz(gunId)) {
+        if (!enabled || !pictures || isTacz(gunId)) {
             return false;
         }
         return HOLE.matches(gunId);
