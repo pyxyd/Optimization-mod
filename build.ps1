@@ -12,7 +12,7 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 if ($GameArg) { $GameDir = $GameArg } else { $GameDir = Split-Path $RepoRoot -Parent }
 
 $OutPrefix = "[TaCZ" + [char]0xFF1A + [char]0x4F18 + [char]0x5316 + "]"
-$OutName   = $OutPrefix + "Optimization-1.20.1-2.0.1-forge.jar"
+$OutName   = $OutPrefix + "Optimization-1.20.1-2.0.2-forge.jar"
 $OutJar    = [System.IO.Path]::Combine((Join-Path $GameDir "mods"), $OutName)
 
 if (-not (Test-Path (Join-Path $GameDir "mods"))) { throw ("not a game folder: " + $GameDir) }
