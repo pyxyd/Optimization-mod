@@ -1,55 +1,42 @@
-Copyright (c) 2026 pyxyd. All Rights Reserved.
+MIT License
 
-Optimization for Tacz ("the Software") is an add-on for the Minecraft mod
-Timeless and Classics Zero (TaCZ).
+Copyright (c) 2026 pyxyd
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-PERMITTED
----------
-You may:
-  * download, install and use the Software for personal, non-commercial play;
-  * read the source code and build it for your own personal use;
-  * record and publish videos, streams and screenshots that show the Software in
-    use, including monetised content on platforms such as YouTube or Bilibili;
-  * link to the official project pages rather than redistributing the files.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-
-NOT PERMITTED
--------------
-You may NOT, without prior written permission from the copyright holder:
-  * redistribute, reupload, mirror or bundle the Software, in original or modified
-    form, including inside a modpack that is distributed to others;
-  * publish modified versions of the Software, or claim it (or a derivative of it)
-    as your own work;
-  * sell the Software or any derivative of it, or place it behind an ad-paywall,
-    a paid membership, or any other access restriction;
-  * remove or alter this licence, the copyright notice, or the author attribution
-    in src/resources/mods.toml.
-
-If you want to include this mod in a public modpack, ask first -- permission is
-usually given, it just has to be asked for.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
-THIRD-PARTY MATERIAL
---------------------
-  * Timeless and Classics Zero (TaCZ) is a separate project by its own authors.
-    This Software is an unofficial add-on, is not affiliated with or endorsed by
-    the TaCZ team, and does not include any TaCZ code.
+--------------------------------------------------------------------------
+THIRD-PARTY MATERIAL -- NOT COVERED BY THE MIT LICENSE ABOVE
+--------------------------------------------------------------------------
+
+Optimization for Tacz is an unofficial add-on for the Minecraft mod
+Timeless and Classics Zero (TaCZ). TaCZ is a separate project by its own
+authors; this project is not affiliated with or endorsed by the TaCZ team
+and contains no TaCZ code.
+
   * The mod icon is a derivative work based on TaCZ's own logo.png, with the
-    author's own artwork and text on top. The TaCZ word mark and logo remain the
-    property of the TaCZ project.
+    author's own artwork and text on top. The TaCZ word mark and logo remain
+    the property of the TaCZ project.
   * No TaCZ source code, binary, model or texture is redistributed by this
     repository. The build expects TaCZ to be installed in the game folder.
 
-
-NO WARRANTY
------------
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Nothing in the MIT license above grants any rights to TaCZ's assets.
 
 
 LINKS

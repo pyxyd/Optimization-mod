@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[46,)"
-license="All Rights Reserved"
+license="MIT"
 logoFile="icon.png"
 
 [[mods]]

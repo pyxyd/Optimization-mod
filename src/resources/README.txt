@@ -92,4 +92,8 @@ these pass:
     ConfigUpgradeCheck legacy config values get upgraded, dead keys get removed
     HitFeedbackCheck   marker geometry and the white / orange / red colour rules
 
-License: All Rights Reserved.
+License: MIT. The full text ships with the source repository:
+    https://github.com/pyxyd/Optimization-mod/blob/main/LICENSE
+
+The mod icon is based on TaCZ's own logo, and the TaCZ word mark remains the property
+of the TaCZ project -- the MIT license grants no rights to it.

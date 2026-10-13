@@ -15,7 +15,7 @@ It only changes how things look and feel. It does **not** add attachment slots, 
   <a href="https://modrinth.com/mod/optimization-forge"><img alt="Modrinth" src="https://img.shields.io/badge/Modrinth-optimization--forge-00AF5C?logo=modrinth"></a>
   <img alt="Minecraft" src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A">
   <img alt="Forge" src="https://img.shields.io/badge/Forge-47.4.26-DFA86A">
-  <img alt="License" src="https://img.shields.io/badge/License-All%20Rights%20Reserved-red">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow"></a>
 </p>
 
 ---
@@ -133,8 +133,10 @@ TaCZ is a separate project by its own authors. This is an **unofficial** add-on,
 affiliated with or endorsed by the TaCZ team, and it contains no TaCZ code.
 
 The mod icon is based on TaCZ's own logo, with the author's artwork and text on top; the
-TaCZ word mark remains the property of the TaCZ project.
+TaCZ word mark remains the property of the TaCZ project, and the MIT licence below does
+not grant any rights to it.
 
-**All Rights Reserved** -- free to use and to make videos with, but please do not
-reupload, modify and republish, or bundle it into a distributed modpack without asking.
-See [LICENSE](LICENSE) for the exact terms.
+**MIT** -- do whatever you like with this mod: use it, fork it, ship it inside a modpack,
+publish your own build. The only condition is that the copyright notice and the licence
+text stay with it. See [LICENSE](LICENSE) for the exact terms.
+
