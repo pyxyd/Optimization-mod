@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download Forge 47.4.26
+        shell: pwsh
+        run: |
+          $forgeVersion = "1.20.1-47.4.26"
+          $forgeUrl = "https://maven.minecraftforge.net/net/minecraftforge/forge/$forgeVersion/forge-$forgeVersion-installer.jar"
+          $installer = "$env:RUNNER_TEMP\forge-installer.jar"
+          Invoke-WebRequest -Uri $forgeUrl -OutFile $installer
+          java -jar $installer --installServer "$env:RUNNER_TEMP\forge"
+          Write-Host "Forge installed to $env:RUNNER_TEMP\forge"
+          Get-ChildItem "$env:RUNNER_TEMP\forge" | Select-Object -First 20 Name
+
+      - name: Show what the repository contains
+        shell: pwsh
+        run: |
+          Write-Host "=== repository root ==="
+          Get-ChildItem -Force | Select-Object Mode, Name
+          Write-Host "=== src ==="
+          if (Test-Path src) { Get-ChildItem src -Recurse -File | Measure-Object | Select-Object Count }
+          Write-Host "=== javac version ==="
+          javac -version
+
+      - name: Compile check
+        shell: pwsh
+        run: |
+          $srcCount = @(Get-ChildItem src -Recurse -Filter *.java -ErrorAction SilentlyContinue).Count
+          Write-Host "Java source files found: $srcCount"
+          if ($srcCount -lt 20) {
+            Write-Host "::error::src\ is missing or incomplete -- $srcCount .java files found, expected at least 20"
+            exit 1
+          }
+          Write-Host "Source tree looks complete."
