@@ -3,7 +3,7 @@
 **English** | [简体中文](#简体中文)
 
 An all-in-one **optimization and quality-of-life add-on** for
-[Timeless and Classics Zero (TaCZ)](https://modrinth.com/mod/tacz).
+[Timeless and Classics Zero (TaCZ)](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero).
 
 It only changes how things look and feel. It does **not** add attachment slots, does
 **not** add items, and does **not** write into your gun packs.
@@ -54,7 +54,7 @@ read only at game startup, so changes there need a full restart.
 ## Install
 
 1. Install Forge 47.x for Minecraft 1.20.1.
-2. Drop [TaCZ](https://modrinth.com/mod/tacz) into `mods/`.
+2. Drop [TaCZ](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero) into `mods/`.
 3. Drop `Optimization-for-Tacz-<version>-forge.jar` into `mods/`.
 4. Start the game once -- `config/taczopt.properties` is created with comments
    explaining every option.
@@ -149,7 +149,7 @@ text stay with it. See [LICENSE](LICENSE) for the exact terms.
 
 [English](#optimization-for-tacz) | **简体中文**
 
-[Timeless and Classics Zero (TaCZ)](https://modrinth.com/mod/tacz) 的一站式**优化与体验增强附属**。
+[Timeless and Classics Zero (TaCZ)](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero) 的一站式**优化与体验增强附属**。
 
 它只改变"看起来和用起来"的部分：**不**新增配件槽位、**不**新增物品、**不**往你的枪包里写任何东西。
 
@@ -198,7 +198,7 @@ text stay with it. See [LICENSE](LICENSE) for the exact terms.
 ## 安装
 
 1. 给 Minecraft 1.20.1 装好 Forge 47.x。
-2. 把 [TaCZ](https://modrinth.com/mod/tacz) 放进 `mods/`。
+2. 把 [TaCZ](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero) 放进 `mods/`。
 3. 把 `Optimization-for-Tacz-<版本>-forge.jar` 放进 `mods/`。
 4. 启动一次游戏——`config/taczopt.properties` 会自动生成，里面每个选项都有注释说明。
 

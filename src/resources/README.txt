@@ -17,6 +17,7 @@ Requirements
   Minecraft 1.20.1
   Forge 47.4.26 (any 47.x should work)
   TaCZ -- Timeless and Classics Zero 1.1.8+
+      https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero
 
 
 Features

@@ -7,7 +7,7 @@
 ## What this is
 
 **Optimization for Tacz** is an add-on for
-[TaCZ (Timeless and Classics Zero)](https://modrinth.com/mod/tacz) that merges eight
+[TaCZ (Timeless and Classics Zero)](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero) that merges eight
 "look and feel" changes into a single jar.
 
 The whole point is **optimization**: it adds no attachment slots, no items, and writes
@@ -220,7 +220,7 @@ shows blank. **Forge's in-game Mods list displays it fine**, because that one re
 
 ## 这是什么
 
-**Optimization for Tacz** 是 [TaCZ（永恒枪械工坊：零）](https://modrinth.com/mod/tacz)
+**Optimization for Tacz** 是 [TaCZ（永恒枪械工坊：零）](https://www.curseforge.com/minecraft/mc-mods/timeless-and-classics-zero)
 的一个附加模组，把八项"观感与手感"的改动合并到了一个 jar 里。
 
 定位就是**优化**：它不新增配件槽位、不新增物品、不往枪包里写任何东西。
