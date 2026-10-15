@@ -14,7 +14,6 @@ It only changes how things look and feel. It does **not** add attachment slots, 
 
 <p align="center">
   <a href="https://github.com/pyxyd/Optimization-mod"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-Optimization--mod-181717?logo=github"></a>
-  <a href="https://modrinth.com/mod/optimization-forge"><img alt="Modrinth" src="https://img.shields.io/badge/Modrinth-optimization--forge-00AF5C?logo=modrinth"></a>
   <img alt="Minecraft" src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A">
   <img alt="Forge" src="https://img.shields.io/badge/Forge-47.4.26-DFA86A">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow"></a>
@@ -158,7 +157,6 @@ text stay with it. See [LICENSE](LICENSE) for the exact terms.
 
 <p align="center">
   <a href="https://github.com/pyxyd/Optimization-mod"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-Optimization--mod-181717?logo=github"></a>
-  <a href="https://modrinth.com/mod/optimization-forge"><img alt="Modrinth" src="https://img.shields.io/badge/Modrinth-optimization--forge-00AF5C?logo=modrinth"></a>
   <img alt="Minecraft" src="https://img.shields.io/badge/Minecraft-1.20.1-62B47A">
   <img alt="Forge" src="https://img.shields.io/badge/Forge-47.4.26-DFA86A">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow"></a>
