@@ -26,7 +26,7 @@ It only changes how things look and feel. It does **not** add attachment slots, 
 
 | # | Feature | What it does |
 |---|---------|--------------|
-| 1 | **One-shot kill** | Guns you list kill any non-player mob on hit. Players are never affected unless you enable it. |
+| 1 | **One-shot kill** | Guns listed in `oneshot.guns` kill any non-player mob on hit -- **the AWM (`tacz:ai_awp`) by default, and only that one**. Add more guns to the list to extend it. Players are never affected unless you enable it. |
 | 2 | **Hybrid aim** | Tap the aim key to toggle aiming, hold it to aim only while held. Mouse and keyboard both work. |
 | 3 | **Auto aim before fire** | Holding fire aims first and shoots only once the scope is up, so the shot never leaves the barrel unscoped. Per-gun on/off panel in game (default key `O`). |
 | 4 | **Hit marker** | One X flashes next to the crosshair: **white** = body, **orange** = headshot, **red** = that shot killed. The shape never changes, only the colour. |
@@ -170,7 +170,7 @@ text stay with it. See [LICENSE](LICENSE) for the exact terms.
 
 | # | 功能 | 说明 |
 |---|------|------|
-| 1 | **一枪致死** | 你指定的枪命中非玩家生物即秒杀。默认不影响玩家，除非你手动打开。 |
+| 1 | **一枪致死** | `oneshot.guns` 里列出的枪命中非玩家生物即秒杀 —— **默认只有 AWM（`tacz:ai_awp`）这一把**。想加别的枪就写进这个列表。默认不影响玩家，除非你手动打开。 |
 | 2 | **混合瞄准** | 轻按瞄准键 = 切换开镜，长按 = 按住才开镜。鼠标、键盘都生效。 |
 | 3 | **开火前自动开镜** | 按住开火会先开镜，等镜子完全抬起才真正开枪，子弹不会在没开镜时飞出去。游戏内有每把枪的开关面板（默认按键 `O`）。 |
 | 4 | **击中反馈** | 准星旁闪一个 X：**白色** = 命中身体，**橙色** = 爆头，**红色** = 这一枪打死了。形状永远不变，只变颜色。 |
