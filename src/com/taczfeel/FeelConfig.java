@@ -28,19 +28,19 @@ public final class FeelConfig {
     /** 开火时第一人称枪身是否有后坐动作 */
     public static boolean kickEnabled = true;
     /** 每发把枪身往玩家方向推多少格 */
-    public static float kickBack = 0.045F;
+    public static float kickBack = 0.024F;
     /** 每发把枪身抬高多少格 */
-    public static float kickUp = 0.015F;
+    public static float kickUp = 0.008F;
     /** 每发随机左右偏多少格（0 = 不随机） */
-    public static float kickSide = 0.010F;
+    public static float kickSide = 0.006F;
     /** 每发枪口上抬角度（度） */
-    public static float kickPitch = 1.1F;
+    public static float kickPitch = 0.55F;
     /** 每发随机翻滚角度（度） */
-    public static float kickRoll = 0.6F;
+    public static float kickRoll = 0.32F;
     /** 回弹速度（每秒衰减倍率的指数底，越大回得越快） */
     public static float kickRecover = 10.0F;
     /** 位移类后坐的最大累积值（格），防止连发时枪飞出屏幕 */
-    public static float kickMax = 0.09F;
+    public static float kickMax = 0.05F;
     /** 腰射时后坐强度倍数 */
     public static float kickHipfireScale = 0.75F;
     /** 开镜时后坐强度倍数 */
@@ -52,11 +52,11 @@ public final class FeelConfig {
     /** 开火时镜头是否短促震动 */
     public static boolean cameraEnabled = true;
     /** 每发镜头抬多少度（正数 = 往上跳） */
-    public static float cameraPitch = 0.45F;
+    public static float cameraPitch = 0.22F;
     /** 每发镜头随机左右偏多少度 */
-    public static float cameraYaw = 0.12F;
+    public static float cameraYaw = 0.06F;
     /** 每发镜头随机翻滚多少度 */
-    public static float cameraRoll = 0.10F;
+    public static float cameraRoll = 0.05F;
     /** 镜头冲击回正速度 */
     public static float cameraRecover = 14.0F;
     /** 腰射时镜头冲击倍数 */

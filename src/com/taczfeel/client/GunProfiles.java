@@ -70,7 +70,7 @@ public final class GunProfiles {
                     if (recoil != null) {
                         float rad = firstPitch(recoil);
                         if (rad > 0.0001F) {
-                            return clamp(rad / REFERENCE_RAD, 0.55F, 2.2F);
+                            return clamp(rad / REFERENCE_RAD, 0.55F, 1.6F);
                         }
                     }
                 }
