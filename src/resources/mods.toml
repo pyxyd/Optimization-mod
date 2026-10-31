@@ -5,11 +5,11 @@ logoFile="icon.png"
 
 [[mods]]
 modId="taczopt"
-version="2.0.2"
-displayName="Optimization for Tacz"
+version="2.1.0"
+displayName="Optimization for Tacz + Feel"
 authors="pyxyd"
 displayURL="https://github.com/pyxyd/Optimization-mod"
-description="An optimization and quality-of-life add-on for TaCZ (Timeless and Classics Zero). One-shot kill, hybrid aim, auto aim-before-fire, hit marker, hip-fire crosshair, crouch-aim zero spread, gun knockback. Config: config/taczopt.properties"
+description="An optimization and quality-of-life add-on for TaCZ (Timeless and Classics Zero). One-shot kill, hybrid aim, auto aim-before-fire, hit marker, hip-fire crosshair, crouch-aim zero spread, gun knockback; plus Feel for TaCZ: viewmodel recoil kick, camera punch, muzzle-flash scaling, ADS vignette, hit sparks, tracer colour, ADS depth of field, gunshot pitch randomisation and layered shot tail. Configs: config/taczopt.properties and config/taczfeel.properties"
 
 [[dependencies.taczopt]]
 modId="forge"

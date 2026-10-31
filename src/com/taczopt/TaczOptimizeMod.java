@@ -41,6 +41,8 @@ public class TaczOptimizeMod {
             OneShotLog.modLoaded();
             HybridAimConfig.ensureLoaded();
             AdsFireConfig.ensureLoaded();
+            // Feel for TaCZ used to be a separate mod; it is initialised from here now.
+            com.taczfeel.FeelMod.init();
         }
 
         HitFeedbackConfig.enabled();
@@ -50,7 +52,7 @@ public class TaczOptimizeMod {
             registerClientHitFeedback();
             registerClientCrosshair();
         }
-        LOGGER.info("[taczopt] Optimization for Tacz 已加载：秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星；配置 config/taczopt.properties");
+        LOGGER.info("[taczopt] Optimization for Tacz 已加载：秒杀 / 混合开镜 / 开火自动开镜 / 命中标记 / 腰射准星 / 质感增强；配置 config/taczopt.properties + config/taczfeel.properties");
     }
 
     private static void registerClientHitFeedback() {

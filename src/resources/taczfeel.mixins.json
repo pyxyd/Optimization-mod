@@ -1,0 +1,15 @@
+{
+    "required": false,
+    "minVersion": "0.8",
+    "package": "com.taczfeel.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "client": [
+        "GunSoundInstanceMixin",
+        "MuzzleFlashScaleMixin",
+        "BulletTracerMixin"
+    ],
+    "mixins": [],
+    "injectors": {
+        "defaultRequire": 0
+    }
+}

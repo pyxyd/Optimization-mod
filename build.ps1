@@ -12,7 +12,7 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 if ($GameArg) { $GameDir = $GameArg } else { $GameDir = Split-Path $RepoRoot -Parent }
 
 $OutPrefix = "[TaCZ" + [char]0xFF1A + [char]0x4F18 + [char]0x5316 + "]"
-$OutName   = $OutPrefix + "Optimization-1.20.1-2.0.2-forge.jar"
+$OutName   = $OutPrefix + "Optimization-1.20.1-2.1.0-forge.jar"
 $OutJar    = [System.IO.Path]::Combine((Join-Path $GameDir "mods"), $OutName)
 
 if (-not (Test-Path (Join-Path $GameDir "mods"))) { throw ("not a game folder: " + $GameDir) }
@@ -71,14 +71,24 @@ foreach ($l in $libs) {
     if (Test-Path $p) { $cp.Add($p) }
 }
 
-$forgeClient = (Get-ChildItem (Join-Path $Libraries "net\minecraftforge\forge") -Recurse -Filter "*-client.jar" |
-    Where-Object { $_.FullName -match "47\.4\.26" } | Select-Object -First 1).FullName
-if ($forgeClient) { $cp.Insert(0, $forgeClient) }
-$cp.Add((Get-ChildItem (Join-Path $Libraries "net\minecraft\client") -Recurse -Filter "*-srg.jar" | Select-Object -First 1).FullName)
-$cp.Add((Get-ChildItem (Join-Path $Libraries "net\minecraftforge\forge") -Recurse -Filter "*-universal.jar" | Select-Object -First 1).FullName)
-$cp.Add((Get-ChildItem (Join-Path $Libraries "net\minecraftforge\javafmllanguage") -Recurse -Filter "*.jar" | Select-Object -First 1).FullName)
-$cp.Add((Get-ChildItem (Join-Path $Libraries "net\minecraftforge\fmlcore") -Recurse -Filter "*.jar" | Select-Object -First 1).FullName)
-$cp.Add((Get-ChildItem (Join-Path $Libraries "net\minecraftforge\fmlloader") -Recurse -Filter "*.jar" | Select-Object -First 1).FullName)
+$forgeVer = ($verJson.BaseName -split "Forge_")[-1]
+$mcVer    = ($verJson.BaseName -split "-")[0]
+Write-Host ("classpath target: minecraft " + $mcVer + " / forge " + $forgeVer)
+
+function Resolve-Jar([string]$Root, [string]$Pattern) {
+    if (-not (Test-Path $Root)) { throw ("library folder missing: " + $Root) }
+    $hit = Get-ChildItem $Root -Recurse -Filter $Pattern -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $hit) { throw ("required jar not found: " + $Pattern + " under " + $Root) }
+    return $hit.FullName
+}
+
+$forgeClient = Resolve-Jar (Join-Path $Libraries "net\minecraftforge\forge") ("forge-" + $mcVer + "-" + $forgeVer + "-client.jar")
+$cp.Insert(0, $forgeClient)
+$cp.Add((Resolve-Jar (Join-Path $Libraries "net\minecraft\client") ("client-" + $mcVer + "-*-srg.jar")))
+$cp.Add((Resolve-Jar (Join-Path $Libraries "net\minecraftforge\forge") ("forge-" + $mcVer + "-" + $forgeVer + "-universal.jar")))
+$cp.Add((Resolve-Jar (Join-Path $Libraries "net\minecraftforge\javafmllanguage") ("javafmllanguage-" + $mcVer + "-" + $forgeVer + ".jar")))
+$cp.Add((Resolve-Jar (Join-Path $Libraries "net\minecraftforge\fmlcore") ("fmlcore-" + $mcVer + "-" + $forgeVer + ".jar")))
+$cp.Add((Resolve-Jar (Join-Path $Libraries "net\minecraftforge\fmlloader") ("fmlloader-" + $mcVer + "-" + $forgeVer + ".jar")))
 $tacz = (Get-ChildItem (Join-Path $GameDir "mods") -Filter "*tacz-1.20.1*.jar" | Select-Object -First 1).FullName
 if (-not $tacz) { throw "TaCZ jar not found in mods\ -- this mod compiles against it" }
 $cp.Add($tacz)
@@ -99,6 +109,7 @@ Remove-Item $staging -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
 Copy-Item (Join-Path $classes "*") $staging -Recurse -Force
 Copy-Item (Join-Path $ResRoot "taczopt.mixins.json") $staging -Force
+Copy-Item (Join-Path $ResRoot "taczfeel.mixins.json") $staging -Force
 Copy-Item (Join-Path $ResRoot "pack.mcmeta") $staging -Force
 Copy-Item (Join-Path $ResRoot "assets") $staging -Recurse -Force
 
@@ -140,8 +151,8 @@ if (-not (Test-Path (Join-Path $checkDir "MixinsCheck.class"))) {
         throw "MixinsCheck did not compile (see javac output above)"
     }
 }
-$rc = Invoke-Native $JavaExe @("-Dfile.encoding=UTF-8", "-cp", $checkDir, "MixinsCheck", $SrcRoot, (Join-Path $ResRoot "taczopt.mixins.json"))
-if ($rc -ne 0) { throw "mixins.json check failed: some @Mixin class is not registered" }
+$rc = Invoke-Native $JavaExe @("-Dfile.encoding=UTF-8", "-cp", $checkDir, "MixinsCheck", $SrcRoot, (Join-Path $ResRoot "taczopt.mixins.json"), (Join-Path $ResRoot "taczfeel.mixins.json"))
+if ($rc -ne 0) { throw "mixins.json check failed: some @Mixin class is not registered in the config that owns its package" }
 
 $asmCp = New-Object System.Collections.Generic.List[string]
 foreach ($a in @("asm", "asm-tree")) {
@@ -181,7 +192,7 @@ $zip = [System.IO.Compression.ZipFile]::OpenRead($OutJar)
 try {
     $names = @($zip.Entries | ForEach-Object { $_.FullName })
 
-    foreach ($need in @("META-INF/mods.toml", "pack.mcmeta", "taczopt.mixins.json")) {
+    foreach ($need in @("META-INF/mods.toml", "pack.mcmeta", "taczopt.mixins.json", "taczfeel.mixins.json")) {
         if (-not ($names -contains $need)) { throw ("jar is missing " + $need) }
     }
     if (-not ($names -contains "icon.png")) { throw "jar is missing icon.png at the root" }
