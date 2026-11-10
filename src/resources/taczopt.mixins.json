@@ -6,10 +6,11 @@
     "client":  [
                    "AimKeyMixin",
                    "BulletHoleParticleMixin",
+                   "CameraMixin",
                    "CrosshairEventMixin",
                    "CrouchAimSpreadMixin",
+                   "EntityEyeMixin",
                    "EntityKineticBulletMixin",
-                   "EntityPosMixin",
                    "FirstPersonGunTransformMixin",
                    "GunRefitScreenInitMixin",
                    "LocalPlayerAimMixin",
