@@ -3,12 +3,22 @@ package com.taczopt.refitdrag;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Quaternionf;
 
-/** Accumulated rotation while the player drags in the refit screen. */
+/**
+ * Accumulated rotation while the player drags in the refit screen.
+ *
+ * The mouse position is fed in once per frame by RefitDragHandler (Forge's
+ * ScreenEvent.Render.Pre carries the cursor), so this class never touches input APIs.
+ */
 public final class RefitDragState {
+
+    private static final double MIN_TRAVEL = 3.0D;
 
     private static float yaw = 0F;
     private static float pitch = 0F;
     private static boolean dragging = false;
+    private static double lastX = 0.0D;
+    private static double lastY = 0.0D;
+    private static double travelled = 0.0D;
 
     private RefitDragState() {
     }
@@ -19,10 +29,42 @@ public final class RefitDragState {
 
     public static void begin() {
         dragging = true;
+        travelled = 0.0D;
     }
 
     public static void end() {
         dragging = false;
+        travelled = 0.0D;
+    }
+
+    public static void reset() {
+        yaw = 0F;
+        pitch = 0F;
+        dragging = false;
+        travelled = 0.0D;
+    }
+
+    /**
+     * Called every frame with the cursor position.
+     *
+     * Rotation only starts after the cursor has travelled a few pixels, so a plain click
+     * on a button or an attachment slot does not nudge the gun.
+     */
+    public static void track(double mouseX, double mouseY) {
+        if (!dragging) {
+            lastX = mouseX;
+            lastY = mouseY;
+            return;
+        }
+        double deltaX = mouseX - lastX;
+        double deltaY = mouseY - lastY;
+        lastX = mouseX;
+        lastY = mouseY;
+        travelled += Math.abs(deltaX) + Math.abs(deltaY);
+        if (travelled < MIN_TRAVEL) {
+            return;
+        }
+        drag(deltaX, deltaY);
     }
 
     public static void drag(double deltaX, double deltaY) {
@@ -39,12 +81,6 @@ public final class RefitDragState {
         }
     }
 
-    public static void reset() {
-        yaw = 0F;
-        pitch = 0F;
-        dragging = false;
-    }
-
     public static boolean hasRotation() {
         return yaw != 0F || pitch != 0F;
     }
@@ -52,8 +88,8 @@ public final class RefitDragState {
     /**
      * Applied at the tail of TaCZ's viewmodel transform, where the pose already sits in the
      * gun's own model space -- so the gun turns around itself instead of orbiting the camera.
-     * PoseStack.mulPose(Quaternionf) is m_252781_ under SRG, and com.mojang.math.Axis is not
-     * reliably on the compile classpath here, so the quaternion is built directly.
+     * PoseStack.mulPose(Quaternionf) is m_252781_ under SRG and com.mojang.math.Axis is not
+     * reliably on the compile classpath here, so the quaternions are built directly.
      */
     public static void apply(PoseStack poseStack) {
         if (pitch != 0F) {
@@ -62,6 +98,10 @@ public final class RefitDragState {
         if (yaw != 0F) {
             poseStack.m_252781_(new Quaternionf().rotationY((float) Math.toRadians(yaw)));
         }
+    }
+
+    public static String describe() {
+        return "yaw=" + Math.round(yaw) + " pitch=" + Math.round(pitch) + " dragging=" + dragging;
     }
 
     private static float wrap(float angle) {

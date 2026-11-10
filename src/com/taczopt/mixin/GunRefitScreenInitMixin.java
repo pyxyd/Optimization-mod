@@ -19,6 +19,8 @@ public abstract class GunRefitScreenInitMixin {
     @Inject(method = "m_7856_", at = @At("TAIL"))
     private void taczopt$resetRefitDrag(CallbackInfo ci) {
         RefitDragConfig.reloadIfChanged();
+        com.taczopt.TaczOptimizeMod.logger().info("[taczopt] refit screen opened, drag={} ({})",
+                RefitDragConfig.enabled, com.taczopt.refitdrag.RefitDragState.describe());
         if (RefitDragConfig.resetOnOpen) {
             RefitDragState.reset();
         }
