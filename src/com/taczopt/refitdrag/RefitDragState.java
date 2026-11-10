@@ -90,23 +90,33 @@ public final class RefitDragState {
     }
 
     /**
-     * Applied at the tail of TaCZ's viewmodel transform, where the pose already sits in the
-     * gun's own model space -- so the gun turns around itself instead of orbiting the camera.
-     * PoseStack.mulPose(Quaternionf) is m_252781_ under SRG and com.mojang.math.Axis is not
-     * reliably on the compile classpath here, so the quaternions are built directly.
+     * Rotates the MODEL, not the pose.
+     *
+     * Rotating the poseStack here means rotating about the camera origin: the gun sits a little
+     * in front of the camera, so any rotation swings it around the camera and it creeps closer or
+     * further away. TaCZ already rotates the model in place for weapon bob by composing into
+     * BedrockPart.additionalQuaternion, so the drag goes there too -- that pivots around the
+     * model's own origin and leaves the distance alone.
+     *
+     * In this frame the barrel runs along X, so a roll around the barrel would be rotateX; pitch
+     * therefore uses Z, and yaw uses Y. Drag up must raise the muzzle, hence the yaw-then-pitch
+     * order and the sign already baked into pitch.
      */
-    public static void apply(PoseStack poseStack) {
-        // Yaw and pitch have to be composed into ONE quaternion, yaw first and then pitch
-        // around the already-yawed local X. Two consecutive world-axis rotations look like a
-        // roll once the gun is turned sideways, which is what made vertical dragging feel wrong.
-        // In this pose the barrel runs along X, so rotating about X is a ROLL around the
-        // barrel (the gun spins in place like a drill) instead of the muzzle going up or
-        // down. Pitch therefore has to use Z -- the axis that is perpendicular to both the
-        // barrel and the world up direction.
+    public static void apply(com.tacz.guns.client.model.BedrockGunModel model) {
+        if (yaw == 0F && pitch == 0F) {
+            return;
+        }
+        if (model == null) {
+            return;
+        }
+        com.tacz.guns.client.model.bedrock.BedrockPart root = model.getRootNode();
+        if (root == null) {
+            return;
+        }
         Quaternionf rotation = new Quaternionf()
                 .rotationY((float) Math.toRadians(yaw))
                 .rotateZ((float) Math.toRadians(pitch));
-        poseStack.m_252781_(rotation);
+        root.additionalQuaternion.mul(rotation);
     }
 
     public static String describe() {
