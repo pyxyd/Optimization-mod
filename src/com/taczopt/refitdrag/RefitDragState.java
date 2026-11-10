@@ -73,7 +73,9 @@ public final class RefitDragState {
         // Dragging left must turn the muzzle left. With rotationY the raw delta pointed the
         // other way (mouse left -> muzzle right), so the yaw accumulates negatively.
         yaw = wrap(yaw - (float) (deltaX * RefitDragConfig.sensitivity * signX));
-        pitch = pitch + (float) (deltaY * RefitDragConfig.sensitivity * signY);
+        // Dragging up must raise the muzzle; with the Z axis the raw delta pointed the other
+        // way, so pitch accumulates negatively.
+        pitch = pitch - (float) (deltaY * RefitDragConfig.sensitivity * signY);
         float limit = RefitDragConfig.pitchLimit;
         if (pitch > limit) {
             pitch = limit;
