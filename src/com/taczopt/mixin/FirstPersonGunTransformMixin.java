@@ -41,7 +41,7 @@ public abstract class FirstPersonGunTransformMixin {
             com.taczopt.TaczOptimizeMod.logger().info("[taczopt] refit render hook reached");
         }
         if (RefitDragState.hasRotation()) {
-            RefitDragState.apply(poseStack);
+            RefitDragState.apply(model);
             if (!appliedLog) {
                 appliedLog = true;
                 com.taczopt.TaczOptimizeMod.logger().info("[taczopt] refit rotation applied: {}", RefitDragState.describe());
