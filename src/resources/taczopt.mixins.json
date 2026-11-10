@@ -6,6 +6,7 @@
     "client": [
         "AimKeyMixin",
         "BulletHoleParticleMixin",
+        "CameraMixin",
         "CrosshairEventMixin",
         "CrouchAimSpreadMixin",
         "EntityKineticBulletMixin",
