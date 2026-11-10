@@ -60,7 +60,7 @@ public final class LeanHandler {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
-        LeanConfig.ensureLoaded();
+        LeanConfig.reloadIfChanged();
         Minecraft minecraft = Minecraft.m_91087_();
         if (minecraft == null || minecraft.f_91074_ == null || minecraft.f_91080_ != null) {
             LeanState.setTarget(0);
@@ -101,7 +101,7 @@ public final class LeanHandler {
         // horizon tilts a little. No yaw here -- turning the view reads as "looking left/right",
         // not as peeking out from behind cover.
         if (LeanConfig.rollDegrees > 0.0D) {
-            event.setRoll(event.getRoll() + (float) (lean * LeanConfig.rollDegrees));
+            event.setRoll(event.getRoll() - (float) (lean * LeanConfig.rollDegrees));
         }
     }
 }
