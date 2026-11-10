@@ -94,12 +94,13 @@ public final class RefitDragState {
      * reliably on the compile classpath here, so the quaternions are built directly.
      */
     public static void apply(PoseStack poseStack) {
-        if (pitch != 0F) {
-            poseStack.m_252781_(new Quaternionf().rotationX((float) Math.toRadians(pitch)));
-        }
-        if (yaw != 0F) {
-            poseStack.m_252781_(new Quaternionf().rotationY((float) Math.toRadians(yaw)));
-        }
+        // Yaw and pitch have to be composed into ONE quaternion, yaw first and then pitch
+        // around the already-yawed local X. Two consecutive world-axis rotations look like a
+        // roll once the gun is turned sideways, which is what made vertical dragging feel wrong.
+        Quaternionf rotation = new Quaternionf()
+                .rotationY((float) Math.toRadians(yaw))
+                .rotateX((float) Math.toRadians(pitch));
+        poseStack.m_252781_(rotation);
     }
 
     public static String describe() {
