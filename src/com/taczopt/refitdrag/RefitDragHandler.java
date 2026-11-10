@@ -36,7 +36,7 @@ public final class RefitDragHandler {
         if (event.getButton() != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             return;
         }
-        RefitDragConfig.ensureLoaded();
+        RefitDragConfig.reloadIfChanged();
         if (!RefitDragConfig.enabled) {
             return;
         }
@@ -48,6 +48,9 @@ public final class RefitDragHandler {
         if (event.getAction() == GLFW.GLFW_PRESS) {
             RefitDragState.begin();
         } else if (event.getAction() == GLFW.GLFW_RELEASE) {
+            if (RefitDragState.isDragging()) {
+                TaczOptimizeMod.logger().info("[taczopt] refit drag released: {}", RefitDragState.describe());
+            }
             RefitDragState.end();
         }
     }

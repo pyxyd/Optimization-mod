@@ -70,7 +70,9 @@ public final class RefitDragState {
     public static void drag(double deltaX, double deltaY) {
         double signX = RefitDragConfig.invertX ? -1.0D : 1.0D;
         double signY = RefitDragConfig.invertY ? -1.0D : 1.0D;
-        yaw = wrap(yaw + (float) (deltaX * RefitDragConfig.sensitivity * signX));
+        // Dragging left must turn the muzzle left. With rotationY the raw delta pointed the
+        // other way (mouse left -> muzzle right), so the yaw accumulates negatively.
+        yaw = wrap(yaw - (float) (deltaX * RefitDragConfig.sensitivity * signX));
         pitch = pitch + (float) (deltaY * RefitDragConfig.sensitivity * signY);
         float limit = RefitDragConfig.pitchLimit;
         if (pitch > limit) {

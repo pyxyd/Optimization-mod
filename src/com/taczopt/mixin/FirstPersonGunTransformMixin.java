@@ -22,6 +22,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FirstPersonRenderGunEvent.class)
 public abstract class FirstPersonGunTransformMixin {
 
+    private static boolean logged = false;
+    private static boolean appliedLog = false;
+
     @Inject(method = "applyFirstPersonGunTransform", at = @At("TAIL"))
     private static void taczopt$rotateGunInRefitScreen(LocalPlayer player, ItemStack gunItemStack,
                                                        PoseStack poseStack, BedrockGunModel model,
@@ -33,8 +36,16 @@ public abstract class FirstPersonGunTransformMixin {
         if (minecraft == null || !(minecraft.f_91080_ instanceof GunRefitScreen)) {
             return;
         }
+        if (!logged) {
+            logged = true;
+            com.taczopt.TaczOptimizeMod.logger().info("[taczopt] refit render hook reached");
+        }
         if (RefitDragState.hasRotation()) {
             RefitDragState.apply(poseStack);
+            if (!appliedLog) {
+                appliedLog = true;
+                com.taczopt.TaczOptimizeMod.logger().info("[taczopt] refit rotation applied: {}", RefitDragState.describe());
+            }
         }
     }
 }
