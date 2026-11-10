@@ -75,7 +75,10 @@ public final class RefitDragState {
         yaw = wrap(yaw - (float) (deltaX * RefitDragConfig.sensitivity * signX));
         // Dragging up must raise the muzzle; with the Z axis the raw delta pointed the other
         // way, so pitch accumulates negatively.
-        pitch = pitch - (float) (deltaY * RefitDragConfig.sensitivity * signY);
+        // The model space is flipped 180 degrees about Z just before the model is drawn, so a
+        // positive Z rotation turns the muzzle the other way in world terms -- the sign is
+        // therefore positive here.
+        pitch = pitch + (float) (deltaY * RefitDragConfig.sensitivity * signY);
         float limit = RefitDragConfig.pitchLimit;
         if (pitch > limit) {
             pitch = limit;
