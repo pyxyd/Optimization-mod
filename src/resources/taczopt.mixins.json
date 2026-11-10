@@ -1,25 +1,28 @@
 {
-    "required": false,
-    "minVersion": "0.8",
-    "package": "com.taczopt.mixin",
-    "compatibilityLevel": "JAVA_17",
-    "client": [
-        "AimKeyMixin",
-        "BulletHoleParticleMixin",
-        "CrosshairEventMixin",
-        "CrouchAimSpreadMixin",
-        "EntityEyeMixin",
-        "EntityKineticBulletMixin",
-        "FirstPersonGunTransformMixin",
-        "GunRefitScreenInitMixin",
-        "LocalPlayerAimMixin",
-        "LocalPlayerShootMixin",
-        "ParticleAccessorMixin",
-        "ShootKeyMixin",
-        "SingleQuadParticleAccessorMixin"
-    ],
-    "mixins": [],
-    "injectors": {
-        "defaultRequire": 0
-    }
+    "required":  false,
+    "minVersion":  "0.8",
+    "package":  "com.taczopt.mixin",
+    "compatibilityLevel":  "JAVA_17",
+    "client":  [
+                   "AimKeyMixin",
+                   "BulletHoleParticleMixin",
+                   "CameraMixin",
+                   "CrosshairEventMixin",
+                   "CrouchAimSpreadMixin",
+                   "EntityEyeMixin",
+                   "EntityKineticBulletMixin",
+                   "FirstPersonGunTransformMixin",
+                   "GunRefitScreenInitMixin",
+                   "LocalPlayerAimMixin",
+                   "LocalPlayerShootMixin",
+                   "ParticleAccessorMixin",
+                   "ShootKeyMixin",
+                   "SingleQuadParticleAccessorMixin"
+               ],
+    "mixins":  [
+
+               ],
+    "injectors":  {
+                      "defaultRequire":  0
+                  }
 }
