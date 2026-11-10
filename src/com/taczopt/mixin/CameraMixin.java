@@ -17,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  *
  * Camera.setup is m_90575_; at its tail the position is final, so the lateral offset is added
  * there. The right vector for a Minecraft yaw is (cos yaw, 0, sin yaw).
+ *
+ * The offset is negated: leaning left (lean = -1) has to move the camera toward the player's
+ * left, which is the negative of that right vector.
  */
 @Mixin(Camera.class)
 public abstract class CameraMixin {
@@ -36,7 +39,7 @@ public abstract class CameraMixin {
         }
         Camera self = (Camera) (Object) this;
         double yaw = Math.toRadians(self.m_90589_());
-        double offset = lean * LeanConfig.distance;
+        double offset = -lean * LeanConfig.distance;
         Vec3 base = self.m_90583_();
         this.m_90581_(new Vec3(
                 base.f_82479_ + Math.cos(yaw) * offset,
