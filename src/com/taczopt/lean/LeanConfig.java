@@ -8,8 +8,9 @@ public final class LeanConfig {
     private static final String P = "lean.";
 
     public static boolean enabled = true;
-    public static double distance = 0.42D;
-    public static double rollDegrees = 7.0D;
+    public static double yawDegrees = 30.0D;
+    public static double distance = 0.0D;
+    public static double rollDegrees = 0.0D;
     public static double speed = 0.28D;
     public static boolean invert = false;
 
@@ -35,11 +36,18 @@ public final class LeanConfig {
 
     private static void load() {
         enabled = ConfigFile.getBool(P + "enabled", true);
-        distance = ConfigFile.getDouble(P + "distance", 0.42D);
-        rollDegrees = ConfigFile.getDouble(P + "roll_degrees", 7.0D);
+        yawDegrees = ConfigFile.getDouble(P + "yaw_degrees", 30.0D);
+        distance = ConfigFile.getDouble(P + "distance", 0.0D);
+        rollDegrees = ConfigFile.getDouble(P + "roll_degrees", 0.0D);
         speed = ConfigFile.getDouble(P + "speed", 0.28D);
         invert = ConfigFile.getBool(P + "invert", false);
 
+        if (yawDegrees < 0.0D) {
+            yawDegrees = 0.0D;
+        }
+        if (yawDegrees > 85.0D) {
+            yawDegrees = 85.0D;
+        }
         if (distance < 0.0D) {
             distance = 0.0D;
         }
