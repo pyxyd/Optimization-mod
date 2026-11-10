@@ -97,10 +97,9 @@ public final class LeanHandler {
         if (lean == 0F) {
             return;
         }
-        // Turning the head: yaw the view. The roll and the lateral shift stay available in the
-        // config but default to 0, because they read as the whole body leaning rather than the
-        // view turning.
-        event.setYaw(event.getYaw() + (float) (lean * LeanConfig.yawDegrees));
+        // A tactical lean like Delta Force's: the view shifts sideways (CameraMixin) and the
+        // horizon tilts a little. No yaw here -- turning the view reads as "looking left/right",
+        // not as peeking out from behind cover.
         if (LeanConfig.rollDegrees > 0.0D) {
             event.setRoll(event.getRoll() + (float) (lean * LeanConfig.rollDegrees));
         }
