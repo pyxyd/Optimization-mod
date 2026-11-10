@@ -97,9 +97,13 @@ public final class RefitDragState {
         // Yaw and pitch have to be composed into ONE quaternion, yaw first and then pitch
         // around the already-yawed local X. Two consecutive world-axis rotations look like a
         // roll once the gun is turned sideways, which is what made vertical dragging feel wrong.
+        // In this pose the barrel runs along X, so rotating about X is a ROLL around the
+        // barrel (the gun spins in place like a drill) instead of the muzzle going up or
+        // down. Pitch therefore has to use Z -- the axis that is perpendicular to both the
+        // barrel and the world up direction.
         Quaternionf rotation = new Quaternionf()
                 .rotationY((float) Math.toRadians(yaw))
-                .rotateX((float) Math.toRadians(pitch));
+                .rotateZ((float) Math.toRadians(pitch));
         poseStack.m_252781_(rotation);
     }
 
