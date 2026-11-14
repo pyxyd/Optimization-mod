@@ -10,7 +10,8 @@
     "taczadsfire.screen.nomatch":  "No matching gun",
     "key.taczadsfire.panel":  "Open ADS Fire panel",
     "key.category.taczadsfire":  "TaCZ Addons",
-    "key.category.taczopt":  "Optimization for Tacz",
     "key.taczopt.lean_left":  "Lean left (peek)",
-    "key.taczopt.lean_right":  "Lean right (peek)"
+    "key.taczopt.lean_right":  "Lean right (peek)",
+    "key.taczopt.aim_assist":  "Aim assist (toggle)",
+    "key.category.taczopt":  "Aim assist"
 }

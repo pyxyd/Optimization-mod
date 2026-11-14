@@ -28,6 +28,8 @@ public final class AdsFireConfig {
 
     private static volatile boolean releaseWhenStop = true;
 
+    private static volatile boolean skipWhenCrouch = true;
+
     private static volatile boolean defaultOn = false;
 
     private static volatile boolean debugLog = false;
@@ -54,6 +56,7 @@ public final class AdsFireConfig {
     private static void load() {
         enabled = ConfigFile.getBool(P + "enabled", true);
         releaseWhenStop = ConfigFile.getBool(P + "release_when_stop", true);
+        skipWhenCrouch = ConfigFile.getBool(P + "skip_when_crouch", true);
         defaultOn = ConfigFile.getBool(P + "default", false);
         debugLog = ConfigFile.getBool(P + "debug_log", false);
         aimWaitTicks = clamp(ConfigFile.getInt(P + "aim_wait_ticks", 4), 0, 60);
@@ -138,6 +141,11 @@ public final class AdsFireConfig {
     public static int holdTicks() {
         ensureLoaded();
         return holdTicks;
+    }
+
+    public static boolean skipWhenCrouch() {
+        ensureLoaded();
+        return skipWhenCrouch;
     }
 
     public static boolean releaseWhenStop() {

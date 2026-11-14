@@ -30,11 +30,6 @@ public final class AdsFireKeys {
     }
 
     @SubscribeEvent
-    public static void onRegisterKeys(RegisterKeyMappingsEvent event) {
-        event.register(PANEL_KEY);
-    }
-
-    @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END || PANEL_KEY == null) {
             return;

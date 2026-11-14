@@ -49,6 +49,15 @@ public final class AdsFireHandler {
         if (operator == null) {
             return;
         }
+        if (AdsFireConfig.skipWhenCrouch() && player.m_20089_() == net.minecraft.world.entity.Pose.CROUCHING) {
+            // Crouching is the deliberate "stay behind cover" stance: let TaCZ fire straight from
+            // the hip instead of forcing the scope up first. Any session already running is ended
+            // so LocalPlayerShootMixin stops cancelling the shots.
+            if (AdsFireState.isActive()) {
+                releaseAim(operator);
+            }
+            return;
+        }
         int tick = player.f_19797_;
         boolean shootDown = ShootKey.SHOOT_KEY != null && ShootKey.SHOOT_KEY.m_90857_();
         if (shootDown) {
@@ -76,8 +85,17 @@ public final class AdsFireHandler {
 
         if (operator.isAim()) {
             if (AdsFireState.isActive() && !AdsFireState.hasFired()) {
-
-                fireNow(operator, tick);
+                // Only fire once the scope has actually come up. Firing the moment isAim()
+                // turns true is why crouch-aim felt like "no auto scope": the shot left while
+                // the ADS animation had barely started.
+                float ready = aimProgress(operator, mc);
+                int waited = tick - AdsFireState.startTick();
+                if (ready >= AIM_READY_PROGRESS && waited >= AdsFireConfig.aimWaitTicks()) {
+                    fireNow(operator, tick);
+                } else if (waited >= Math.max(AdsFireConfig.aimWaitTicks() + MANUAL_AIM_EXTRA_TICKS,
+                        HARD_TIMEOUT_TICKS)) {
+                    fireNow(operator, tick);
+                }
             }
             if (AdsFireState.isActive() && AdsFireState.hasFired() && !shootDown
                     && AdsFireConfig.releaseWhenStop()
@@ -119,6 +137,14 @@ public final class AdsFireHandler {
         if (!AdsFireState.isAimRequested()) {
 
             AdsFireState.markAimRequested();
+            operator.aim(true);
+            return;
+        }
+
+        if (!operator.isAim()) {
+            // Something else (the hybrid aim toggle, a pose change while crouching, ...)
+            // closed the scope inside an active fire session -- open it again instead of
+            // waiting out the timeout and firing blind.
             operator.aim(true);
             return;
         }

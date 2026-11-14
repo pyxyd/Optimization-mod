@@ -10,7 +10,8 @@
     "taczadsfire.screen.nomatch":  "没有匹配的枪械",
     "key.taczadsfire.panel":  "打开枪械开镜面板",
     "key.category.taczadsfire":  "TaCZ 附加",
-    "key.category.taczopt":  "TaCZ 优化",
     "key.taczopt.lean_left":  "左探头",
-    "key.taczopt.lean_right":  "右探头"
+    "key.taczopt.lean_right":  "右探头",
+    "key.taczopt.aim_assist":  "辅助瞄准（开关）",
+    "key.category.taczopt":  "辅助瞄准"
 }

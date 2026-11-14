@@ -413,6 +413,15 @@ public final class ConfigFile {
         p.setProperty("adsfire.release_when_stop", "true");
         p.setProperty("adsfire.debug_log", "false");
 
+        p.setProperty("assist.on", "false");
+        p.setProperty("assist.enabled", "true");
+        p.setProperty("assist.range", "48.0");
+        p.setProperty("assist.half_angle", "40.0");
+        p.setProperty("assist.speed_degrees", "1.2");
+        p.setProperty("assist.require_gun", "true");
+        p.setProperty("assist.include_players", "false");
+        p.setProperty("assist.require_line_of_sight", "true");
+
         p.setProperty("hit.enabled", "true");
         p.setProperty("hit.duration_ms", "450");
         p.setProperty("hit.scale", "1.0");
